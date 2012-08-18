@@ -126,10 +126,16 @@ INSTALLED_APPS = (
     'gunicorn',
     'registration',
     'south',
+    'emailusernames',
 
     # Our Apps
     'gungnir.core',
     )
+
+# email-as-username
+AUTHENTICATION_BACKENDS = (
+    'emailusernames.backends.EmailAuthBackend',
+)
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
