@@ -1,0 +1,5 @@
+Confirm your account before it expires in {{ expiration_days }} days!
+
+<a href="http://{{ site.domain }}{% url registration_activate activation_key %}">Click here to confirm!</a>
+
+If you can't see this then try {{ activation_key }}.

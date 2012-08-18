@@ -124,7 +124,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'registration',
     'south',
-    
+
     # Our Apps
     'core',
 )
