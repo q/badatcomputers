@@ -4,9 +4,22 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from core.forms import CompatEmailUserCreationForm
 from emailusernames.forms import EmailAuthenticationForm
+from builds.views import *
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    # Examples:
+    url(r'^$', 'gungnir.core.views.index', name='gungnir_index'),
+    #    url(r'^derp/', include('gungnir.derp.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+    
+    # generic views
+    (r'^AwsBaseAmi/$',AwsBaseAmiView.as_view()),
+    (r'^BuildConfig/$',BuildConfigView.as_view()),
+    (r'^Build/$',BuildView.as_view()),
+    (r'^SupervisordCommand/$',SupervisordCommandView.as_view()),
+    (r'^PythonRequirements/$',PythonRequirementsView.as_view()),
+    
     # django-registration
     url(r'^accounts/register/$',
         'registration.views.register',
@@ -20,9 +33,4 @@ urlpatterns = patterns('',
         },
         name='registration_register'),
     (r'^accounts/', include('registration.urls')),
-
-    # Examples:
-    url(r'^$', 'gungnir.core.views.index', name='gungnir_index'),
-    #    url(r'^derp/', include('gungnir.derp.urls')),
-    url(r'^admin/', include(admin.site.urls)),
 )

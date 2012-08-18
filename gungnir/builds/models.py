@@ -81,4 +81,3 @@ class PythonRequirements(BaseModel):
     pypi_name = models.CharField(max_length=128) # Actual python package name that you would pass to pip
     os_package = models.CharField(max_length=128) # Required OS package for the package name
     build_only = models.BooleanField(default=False) # Indicate whether the package can be removed after AMI build
-
