@@ -20,6 +20,9 @@ urlpatterns = patterns('',
     (r'^SupervisordCommand/$',SupervisordCommandView.as_view()),
     (r'^PythonRequirements/$',PythonRequirementsView.as_view()),
     
+    # django-celery
+    url(r'^djcelery/', include('djcelery.urls')),
+    
     # django-registration
     url(r'^accounts/register/$',
         'registration.views.register',
