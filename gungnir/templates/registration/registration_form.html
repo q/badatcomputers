@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block title %}create account{% endblock %}
+{% block title %}Create Account{% endblock %}
 
 {% block extrajs %}
     <script type="text/javascript">
@@ -16,7 +16,7 @@
         <h1>Create Account</h1>
     </div>
     <div>
-        <form method="POST" class="" action="">
+        <form method="POST" class="" action="{% url registration_register %}">
             <fieldset>
                 <!-- <legend>User Details</legend> -->
                 {% csrf_token %}
@@ -34,7 +34,6 @@
                     <button type="reset" class="btn">Cancel</button>
                 </div>
             </fieldset>
-
 
         </form>
     </div>
