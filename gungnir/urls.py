@@ -1,18 +1,12 @@
 from django.conf.urls import patterns, include, url
 
-# Uncomment the next two lines to enable the admin:
+## Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
-
-from example.views import ExampleView
 urlpatterns = patterns('',
     # Examples:
-
-    # url(r'^project_template/', include('project_template.foo.urls')),
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
+    url(r'^$', 'gungnir.core.views.index', name='gungnir_index'),
+    #    url(r'^derp/', include('gungnir.derp.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
