@@ -25,8 +25,13 @@ pip-log.txt
 # Sqlite
 *.db
 
+
 #Mr Developer
 .mr.developer.cfg
 
 # idea
 .idea
+
+
+# Prod settings
+gungnir/prod_settings.py
