@@ -5,6 +5,7 @@ from django.contrib import admin
 from core.forms import CompatEmailUserCreationForm
 from emailusernames.forms import EmailAuthenticationForm
 from builds.views import *
+from projects.views import *
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -19,6 +20,7 @@ urlpatterns = patterns('',
     (r'^Build/$',BuildView.as_view()),
     (r'^SupervisordCommand/$',SupervisordCommandView.as_view()),
     (r'^PythonRequirements/$',PythonRequirementsView.as_view()),
+    (r'^Repo/$',RepoView.as_view()),
     
     # django-celery
     url(r'^djcelery/', include('djcelery.urls')),
