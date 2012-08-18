@@ -123,10 +123,10 @@ INSTALLED_APPS = (
     'django_extensions',
     'gunicorn',
     'registration',
-
+    'south',
+    
     # Our Apps
     'core',
-
 )
 
 # A sample logging configuration. The only tangible logging
