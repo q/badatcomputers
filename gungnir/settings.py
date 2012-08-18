@@ -179,3 +179,7 @@ LOGGING = {
             },
         }
 }
+
+
+# Path under which all downloaded repos will be stored
+REPO_ROOT = '/tmp'
