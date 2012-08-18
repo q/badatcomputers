@@ -130,7 +130,9 @@ INSTALLED_APPS = (
 
     # Our Apps
     'gungnir.core',
-    )
+    'gungnir.projects',
+    'gungnir.builds',
+)
 
 # email-as-username
 AUTHENTICATION_BACKENDS = (
