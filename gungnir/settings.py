@@ -129,7 +129,9 @@ INSTALLED_APPS = (
 
     # Our Apps
     'gungnir.core',
-    )
+    'gungnir.projects',
+    'gungnir.builds',
+)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
