@@ -101,7 +101,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'gungnir.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'gungnir.config.wsgi.application'
 
 TEMPLATE_DIRS = (
 # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
