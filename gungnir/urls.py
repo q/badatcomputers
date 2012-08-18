@@ -4,9 +4,15 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from core.forms import CompatEmailUserCreationForm
 from emailusernames.forms import EmailAuthenticationForm
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
+
+    # django-celery
+    url(r'^djcelery/', include('djcelery.urls')),
+
+
     # django-registration
     url(r'^accounts/register/$',
         'registration.views.register',
@@ -20,6 +26,8 @@ urlpatterns = patterns('',
         },
         name='registration_register'),
     (r'^accounts/', include('registration.urls')),
+
+
 
     # Examples:
     url(r'^$', 'gungnir.core.views.index', name='gungnir_index'),
