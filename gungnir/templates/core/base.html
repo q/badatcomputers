@@ -26,8 +26,8 @@
                 <ul class="nav pull-left">
                     <li><a href="">About</a></li>
                     {% if not user.is_authenticated %}
-                        <li><a href="#">Register</a></li>
-                        <li><a href="#">Login</a></li>
+                        <li><a href="{% url registration_register %}">Register</a></li>
+                        <li><a href="{% url auth_login %}">Login</a></li>
                     {% endif %}
                 </ul>
             {% endblock %}
