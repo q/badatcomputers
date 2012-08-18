@@ -14,15 +14,18 @@
     <fieldset>
         {% csrf_token %}
         
-        {% for field in form %}
-        <div class="{% if field.errors %}error{% endif %}">
-            {{ field.label_tag }}
+        <div class="{% if form.email.errors %}error{% endif %}">
+            {{ form.email.label_tag }}
             <div class="input">
-                {{ field }} {{ field.errors }}
+                {{ form.email }} {{ form.email.errors }}
             </div>
         </div>
-        {% endfor %}
-        
+        <div class="{% if form.password.errors %}error{% endif %}">
+            {{ form.password.label_tag }}
+            <div class="input">
+                {{ form.password }} {{ form.password.errors }}
+            </div>
+        </div>
         <p><a href="{% url auth_password_reset %}">Forgot</a> your password?  <a href="{% url registration_register %}">Need an account</a>?</p>
         <input type="submit" value="login" class="btn"/>
         <input type="hidden" name="next" value="{{ next }}" />
