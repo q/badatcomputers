@@ -1,0 +1,231 @@
+from fabric.api import env, sudo, run, output, cd
+from fabric.operations import put
+
+import os
+import boto
+from django.conf import settings
+from django.template.loader import render_to_string
+from StringIO import StringIO
+
+import time
+
+CONNECTABLE_INSTANCE_STATES = ['running']
+
+def wait_for_instance(instance):
+    poll_interval = 30
+
+    print 'Instance state is: ', instance.update()
+    instance_state =  instance.state
+
+    if not instance_state in CONNECTABLE_INSTANCE_STATES:
+        print 'Instance not ready...sleeping'
+        time.sleep(poll_interval)
+        wait_for_instance(instance)
+
+    else:
+        return instance
+
+
+def setup_fab_output():
+    output.aborts = True
+    output.warnings = True
+
+    output.user = False
+    output.stdout = False
+    output.stderr = False
+    output.running = False
+    output.debug = False
+    output.status = False
+
+def connect_to_instance(instance, user, key_file):
+    wait_for_instance(instance)
+
+    host_string = '{user}@{host}:{port}'.format(user=user, host=instance.public_dns_name, port=22)
+    env.host_string = host_string
+
+    if instance.public_dns_name not in env.hosts:
+        env.hosts.append(instance.public_dns_name)
+
+    env.key_filename = key_file
+
+    env.warn_only = True
+    env.disable_known_hosts = True
+
+    return host_string
+
+from functools import wraps
+
+def builder_fab(func):
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        build_instance = args[0].instance
+        #setup_fab_output()
+        connect_to_instance(build_instance, args[0].user, args[0].key_file)
+
+        func(*args, **kwargs)
+
+    return wrapper
+
+class AwsGunicornCentos(object):
+    """Class responsible for building AWS instances"""
+
+    required_packages = ['build-essential', 'nginx', 'python-pip', 'python-virtualenv', 'python-dev']
+
+    packages_to_remove = ['build-essential', 'python-dev',]
+    required_python_packages = ['supervisor']
+
+
+    key_file = '/tmp/djangodash2012.pem'
+    user = 'ubuntu'
+
+
+    local_app_path = '/tmp/test-app/*'
+    requirements_path = 'requirements.txt'
+
+    venv_root = '/opt/venvs/'
+    project_name = 'TEST_PROJECT'
+
+    project_site_root = '/opt/venvs/TEST_PROJECT/site/'
+    project_root = '/opt/venvs/TEST_PROJECT/site/TEST_PROJECT'
+    project_static_root = '/opt/venvs/TEST_PROJECT/site/static/'
+    project_media_root = '/opt'
+
+    project_settings = 'gungnir.prod_settings'
+
+    # Supervisord templates
+    supd_conf_template = 'configs/supervisord/supervisord.conf'
+    supd_init_template = 'configs/supervisord/supervisord-init'
+
+
+    # NGINX templates
+    nginx_conf_template = 'configs/nginx/app.conf'
+
+    def __init__(self, project):
+        self.project = project
+
+        self.instance = None
+        self.build_config = None
+        self.ec2 = boto.connect_ec2(settings.ACCESS_KEY_ID, settings.SECRET_ACCESS_KEY)
+        self.reservation = None
+        self.instance_running = False
+
+    def launch_instance(self):
+        image = self.ec2.get_image('ami-d99e37b0')
+        self.reservation = image.run(key_name='djangodash2012',
+            instance_type = 'm1.small',
+        )
+
+        self.instance = self.reservation.instances[0]
+
+    @builder_fab
+    def install_required_packages(self):
+        sudo('apt-get update')
+        apt_install_cmd = 'apt-get -y install ' + ' '.join(self.required_packages)
+        return sudo(apt_install_cmd)
+
+    @builder_fab
+    def build_venv(self):
+
+        # Ensure our venv root directory exists
+        sudo('mkdir -p {0}'.format(self.venv_root))
+
+        # Make our virtualenv
+        virtual_env_path = os.path.join(self.venv_root, self.project_name)
+
+        sudo('virtualenv {0}'.format(virtual_env_path))
+
+        # Make etc and logs directory
+        etc_dir = os.path.join(virtual_env_path, 'etc')
+        sudo('mkdir -p {0}'.format(etc_dir))
+
+        logs_dir = os.path.join(virtual_env_path, 'logs')
+        sudo('mkdir -p {0}'.format(logs_dir))
+
+        # Make site directory
+        sudo('mkdir -p {0}'.format(self.project_root))
+
+        self.fix_permissions(virtual_env_path)
+
+    @builder_fab
+    def place_app(self):
+        put(self.local_app_path, self.project_root)
+        self.fix_permissions(self.project_root)
+
+    @builder_fab
+    def install_requirements(self):
+        venv_dir  = os.path.join(self.venv_root, self.project_name)
+        bin_dir = os.path.join(venv_dir, 'bin')
+
+        full_requirements_path = os.path.join(self.project_root, self.requirements_path)
+        pip_cmd = '{bin}/pip install -r {requirements}'.format(bin=bin_dir, requirements=full_requirements_path)
+        run(pip_cmd)
+
+    @builder_fab
+    def fix_permissions(self, path):
+        sudo('chown -R {user} {path}'.format(user=self.user, path=path))
+
+
+    def _get_template_context(self):
+        context = dict()
+        context['project_name'] = self.project_name
+        context['project_settings'] = self.project_settings
+        context['project_root'] = self.project_root
+        context['venv_root'] = self.venv_root
+        context['commands'] = None
+
+        return context
+
+    @builder_fab
+    def configure_supervisord(self):
+        context = self._get_template_context()
+        supd_conf = StringIO(render_to_string(self.supd_conf_template, context))
+
+        supd_init = StringIO(render_to_string(self.supd_init_template, context))
+
+        venv_path = os.path.join(self.venv_root, self.project_name)
+        etc_path = os.path.join(venv_path, 'etc')
+        bin_path = os.path.join(venv_path, 'bin')
+
+        supd_conf_path = os.path.join(etc_path, 'supervisord.conf')
+        put(supd_conf, supd_conf_path)
+
+
+        supd_init_path = os.path.join(bin_path, '{0}-supervisord'.format(self.project_name))
+        put(supd_init, supd_init_path)
+        run('chmod 755 {0}'.format(supd_init_path))
+
+
+
+
+    @builder_fab
+    def configure_nginx(self):
+        context = self._get_template_context()
+        nginx_conf = StringIO(render_to_string(self.nginx_conf_template, context))
+
+        nginx_conf_dir = '/etc/nginx/sites-available/'
+        nginx_conf_fname = self.project_name + '.conf'
+        nginx_conf_path = os.path.join(nginx_conf_dir, nginx_conf_fname )
+
+        tmp_nginx_conf = os.path.join('/tmp', nginx_conf_fname)
+
+        put(nginx_conf, tmp_nginx_conf)
+
+        sudo('mv {tmp_config} {perm_config}'.format(tmp_config=tmp_nginx_conf, perm_config=nginx_conf_path))
+        sudo('ln -s {0} /etc/nginx/sites-enabled/{1}'.format(nginx_conf_path, nginx_conf_fname))
+        sudo('service nginx restart')
+
+
+
+    @builder_fab
+    def remove_unwanted_packages(self):
+        apt_cmd = 'apt-get -y remove ' + ' '.join(self.packages_to_remove)
+
+    def deploy(self):
+        self.launch_instance()
+        self.install_required_packages()
+        self.build_venv()
+        self.place_app()
+        self.install_requirements()
+        self.configure_supervisord()
+        self.configure_nginx()
