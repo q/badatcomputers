@@ -4,9 +4,10 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-
-from example.views import ExampleView
 urlpatterns = patterns('',
+    # django-registration
+    (r'^accounts/', include('registration.urls')),
+
     # Examples:
 
     # url(r'^project_template/', include('project_template.foo.urls')),
