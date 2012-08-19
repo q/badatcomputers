@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.decorators import login_required
 
-from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate, RepoDetailView, pre_fetch_repo_view, BuildCreate
+from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate, RepoDetailView, pre_fetch_repo_view, BuildCreate, BuildConfigCreate
 #from gungnir.core.views import ProfileView, DashboardView
 
 
@@ -23,6 +23,10 @@ urlpatterns = patterns('gungnir.projects.views',
     url(r'^build/add/$',
         login_required(BuildCreate.as_view()),
         name='gungnir-projects-build-create'),
+        
+    url(r'^buildconfig/add/$',
+        login_required(BuildConfigCreate.as_view()),
+        name='gungnir-projects-buildconfig-create'),
     
     url(r'^tasks/pre_fetch_repo$', login_required(pre_fetch_repo_view)),
 

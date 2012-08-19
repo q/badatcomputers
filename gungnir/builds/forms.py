@@ -4,10 +4,6 @@ from gungnir.builds.models import *
 """ 
 ModelForms 
 """
-class BuildForm(ModelForm):
-    class Meta:
-        model = Build
-
 class AwsBaseAmiForm(ModelForm):
     class Meta:
         model = AwsBaseAmi

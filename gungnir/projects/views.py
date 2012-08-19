@@ -9,8 +9,8 @@ from gungnir.projects.models import Application, Repo
 from gungnir.projects.forms import ApplicationForm, RepoForm
 from gungnir.projects.tasks import pre_fetch_repo
 
-from gungnir.builds.models import Build
-from gungnir.builds.forms import BuildForm
+from gungnir.builds.models import Build, BuildConfig
+from gungnir.builds.forms import BuildForm, BuildConfigForm
 
 from djcelery.views import task_view
 
@@ -84,5 +84,26 @@ class BuildCreate(CreateView):
         context = super(BuildCreate, self).get_context_data(**kwargs)
         context['page_title'] = 'Link Build'
         context['page_header'] = 'Link Build'
+        context['form_submit_text'] = 'Link'
+        return context
+        
+class BuildConfigCreate(CreateView):
+    model = BuildConfig
+    form_class = BuildConfigForm
+    success_url=reverse_lazy('gungnir-core-dashboard')
+
+    def get_form(self, form_class):
+        form = super(BuildConfigCreate,self).get_form(form_class)
+        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+        return form
+
+    def form_valid(self, form):
+        form.instance.application.owner = self.request.user
+        return super(BuildConfigCreate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(BuildConfigCreate, self).get_context_data(**kwargs)
+        context['page_title'] = 'Link BuildConfig'
+        context['page_header'] = 'Link BuildConfig'
         context['form_submit_text'] = 'Link'
         return context
