@@ -10,8 +10,10 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'gungnir.core.views.index', name='gungnir_index'),
     #    url(r'^derp/', include('gungnir.derp.urls')),
+    url(r'^', include('gungnir.core.urls')),
+    url(r'^$', 'gungnir.core.views.index', name='gungnir_index'),
+
     url(r'^admin/', include(admin.site.urls)),
     
     # generic views
