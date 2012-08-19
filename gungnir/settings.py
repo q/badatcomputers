@@ -198,7 +198,7 @@ LOGGING = {
 }
 
 # RMQ
-BROKER_HOST = 'ec2-50-19-70-54.compute-1.amazonaws.com'
+BROKER_HOST = 'gungnir.me'
 BROKER_PORT = 5672
 BROKER_USER = 'gungnir'
 BROKER_PASSWORD = 'XXX'

@@ -14,7 +14,7 @@ urlpatterns = patterns('gungnir.projects.views',
         login_required(ApplicationDetailView.as_view()),
         name='gungnir-projects-application-detail'),
     
-    url(r'^repo/add/$',
+    url(r'^application/(?P<pk>\d+)/repo/add$',
         login_required(RepoCreate.as_view()),
         name='gungnir-projects-repo-create'),
     url(r'^repo/update/(?P<id>\d+)/$',
@@ -33,7 +33,7 @@ urlpatterns = patterns('gungnir.projects.views',
     url(r'^build/(?P<pk>\d+)/$',
         login_required(BuildDetailView.as_view()),
         name='gungnir-projects-build-detail'),
-        
+
     url(r'^buildconfig/add/$',
         login_required(BuildConfigCreate.as_view()),
         name='gungnir-projects-buildconfig-create'),
