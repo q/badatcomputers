@@ -201,7 +201,7 @@ LOGGING = {
 BROKER_HOST = 'gungnir.me'
 BROKER_PORT = 5672
 BROKER_USER = 'gungnir'
-BROKER_PASSWORD = 'fuckyou1!'
+BROKER_PASSWORD = 'XXX'
 BROKER_VHOST = '/gungnir'
 
 CELERY_RESULT_BACKEND = 'amqp'
