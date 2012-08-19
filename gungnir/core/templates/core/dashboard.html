@@ -15,7 +15,15 @@
         </p>
     </header>
     <br>
-
+    
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert">
+          <button class="close" data-dismiss="alert">×</button>
+          {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
     {% for app in object_list %}
     <div class="page-header">
         <h2>{{ app.name }} ({{ app.get_app_type_display }})</h2>
