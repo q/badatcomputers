@@ -5,8 +5,8 @@ import os
 
 
 from git import Repo as GitRepo
-from gungnir.models import Repo
-from gungnir.projects.utils import pull_repo, get_tree_from_commit, write_tree_to_disk, clone_repo
+from gungnir.projects.models import Repo
+from gungnir.projects.utils import clone_repo
 
 
 

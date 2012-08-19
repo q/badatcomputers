@@ -5,7 +5,8 @@ from gungnir.core.models import BaseModel
 
 
 from git import Repo as GitRepo
-from gungnir.projects.tasks import fetch_repo_for_existing_entry
+#from gungnir.projects.tasks import fetch_repo_for_existing_entry
+from celery.execute import send_task
 from os import path
 
 class Application(BaseModel):
@@ -38,10 +39,19 @@ class Repo(BaseModel):
         except Exception as e:
             return False
 
-    def save(self, *args, **kwargs):
-        results = super(Application, self).save(*args, **kwargs)
+    def branches(self):
+        repo = GitRepo(self.path_on_disk)
 
-        # Fire off a task to pull the repo and populate branch/path_on_disk
-        fetch_repo_for_existing_entry.apply_async(args=[self.repo_id])
+        branches = list()
+        for branch in repo.branches:
+            branches.append(branch.name)
+
+        return branches
+
+    def save(self, *args, **kwargs):
+        
+        results = super(Application, self).save(*args, **kwargs)
+        # Fire off a task to pull the repo and populate branch/path_on_disk, this should be done with a signal but i've had 8 hours sleep over hte past 40...
+        send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=[self.repo_id])
 
         return results
