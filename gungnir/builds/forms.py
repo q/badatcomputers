@@ -8,12 +8,12 @@ class AwsBaseAmiForm(ModelForm):
 class BuildConfigForm(ModelForm):
     class Meta:
         model = BuildConfig
-        exclude = ('parent_config')
+        exclude = ('parent_config', 'application')
 
 class BuildForm(ModelForm):
     class Meta:
         model = Build
-        exclude = ('ami_id', 'instance_id', 'deploy_status', 'build_date')
+        exclude = ('application', 'ami_id', 'instance_id', 'deploy_status', 'build_date')
 
 class SupervisordCommandForm(ModelForm):
     class Meta:
