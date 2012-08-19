@@ -18,5 +18,5 @@ ssh==1.7.14
 wsgiref==0.1.2
 django-email-as-username==1.5.1
 py-bcrypt==0.2
-django-debug_toolbar
+django-debug-toolbar
 GitPython==0.3.2.RC1
