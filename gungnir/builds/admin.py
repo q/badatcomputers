@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 
 
-app_name = 'gungnir.builds'
+app_name = 'builds'
 app = models.get_app(app_name)
 models = models.get_models(app)
 
