@@ -30,7 +30,27 @@ class Repo(BaseModel):
     url = models.CharField(max_length=2048)
     branch = models.CharField(max_length=50, default='master')
     path_on_disk = models.CharField(max_length=1024, blank=True, null=True)
-    # requirements
+
+    class Meta:
+        unique_together = ('application', 'url', 'branch')
+
+    def __unicode__(self):
+        return self.branch + ' on ' + self.short_name
+
+
+    @property
+    def short_name(self):
+        return self.url.split('/')[-1]
+
+    def _branch_choices(self):
+        if not self.repo_exists():
+            return [('master', 'master')]
+        else:
+            branches = list()
+            for branch in self.branches():
+                branches.append((branch, branch))
+        return branches
+
 
     def repo_exists(self):
         """Determine if path_on_disk is a valid repo or not"""

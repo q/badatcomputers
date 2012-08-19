@@ -61,7 +61,7 @@ def builder_fab(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         build_instance = args[0].instance
-        #setup_fab_output()
+        setup_fab_output()
         connect_to_instance(build_instance, args[0].user, args[0].key_file)
         try:
             return func(*args, **kwargs)
@@ -96,7 +96,7 @@ class AwsGunicornUbuntu(object):
         self.project = buildconfig
         self.repo = buildconfig.repo
 
-        self.local_app_path = '/tmp/test-app' + '/*'
+        self.local_app_path =  self.repo.path_on_disk + '/*'
 
         self.venv_root = buildconfig.deploy_root
         self.project_name = buildconfig.application.name
@@ -268,8 +268,10 @@ class AwsGunicornUbuntu(object):
         if stop_instance:
             self.instance.stop()
 
-        image_name = self.project_name + '-' + datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-        description = 'Image created by gungnir for {0}'.format(self.build_config.application.name)
-        self.ec2.create_image(self.instance.id, image_name, description, no_reboot=False)
+        now = datetime.now().strftime('%Y-%m-%d-%H-%M')
+        image_name = self.project_name + '-' + now
+        description = 'Image created by gungnir for {0} on {1}'.format(self.build_config.application.name, now)
+        ami = self.ec2.create_image(self.instance.id, image_name, description, no_reboot=False)
 
+        return self.instance.id, ami
 
