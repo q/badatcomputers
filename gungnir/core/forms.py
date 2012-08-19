@@ -1,12 +1,16 @@
 from emailusernames.forms import EmailUserCreationForm
 from django.forms import ModelForm
+from django import forms
 from gungnir.core.models import Profile
 
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
         exclude = ('user','can_build',)
-
+    
+    aws_akey = forms.CharField(label="Access Key")
+    aws_skey = forms.CharField(label="Secret Key")
+    
 # workaround to get username-as-emails to work with django-registration
 class CompatEmailUserCreationForm(EmailUserCreationForm):
     def clean(self):
