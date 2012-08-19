@@ -1,11 +1,12 @@
 from fabric.api import env, sudo, run, output, cd
 from fabric.operations import put
-
+from fabric.network import NetworkError
 import os
 import boto
 from django.conf import settings
 from django.template.loader import render_to_string
-from StringIO import StringIO
+
+from datetime import datetime
 
 import time
 
@@ -62,14 +63,17 @@ def builder_fab(func):
         build_instance = args[0].instance
         #setup_fab_output()
         connect_to_instance(build_instance, args[0].user, args[0].key_file)
-
-        func(*args, **kwargs)
+        try:
+            return func(*args, **kwargs)
+        except NetworkError:
+            # AWS is lying and the instance probably isnt up yet...sleep a few seconds
+            time.sleep(30)
+            return func(*args, **kwargs)
 
     return wrapper
 
-class AwsGunicornCentos(object):
+class AwsGunicornUbuntu(object):
     """Class responsible for building AWS instances"""
-
     required_packages = ['build-essential', 'nginx', 'python-pip', 'python-virtualenv', 'python-dev']
 
     packages_to_remove = ['build-essential', 'python-dev',]
@@ -79,20 +83,6 @@ class AwsGunicornCentos(object):
     key_file = '/tmp/djangodash2012.pem'
     user = 'ubuntu'
 
-
-    local_app_path = '/tmp/test-app/*'
-    requirements_path = 'requirements.txt'
-
-    venv_root = '/opt/venvs/'
-    project_name = 'TEST_PROJECT'
-
-    project_site_root = '/opt/venvs/TEST_PROJECT/site/'
-    project_root = '/opt/venvs/TEST_PROJECT/site/TEST_PROJECT'
-    project_static_root = '/opt/venvs/TEST_PROJECT/site/static/'
-    project_media_root = '/opt'
-
-    project_settings = 'gungnir.prod_settings'
-
     # Supervisord templates
     supd_conf_template = 'configs/supervisord/supervisord.conf'
     supd_init_template = 'configs/supervisord/supervisord-init'
@@ -101,11 +91,26 @@ class AwsGunicornCentos(object):
     # NGINX templates
     nginx_conf_template = 'configs/nginx/app.conf'
 
-    def __init__(self, project):
-        self.project = project
+    def __init__(self, buildconfig):
+        self.is_deployed = False
+        self.project = buildconfig
+        self.repo = buildconfig.repo
+
+        self.local_app_path = '/tmp/test-app' + '/*'
+
+        self.venv_root = buildconfig.deploy_root
+        self.project_name = buildconfig.application.name
+        self.project_site_root = self.venv_root + '/' + self.project_name + '/site/'
+        self.project_root = self.project_site_root + '/' + self.project_name
+        self.project_media_root = buildconfig.media_root
+        self.project_static_root = buildconfig.static_root
+
+        self.project_settings = buildconfig.django_settings
+
+        self.requirements_path = 'requirements.txt' #buildconfig.requirements
 
         self.instance = None
-        self.build_config = None
+        self.build_config = buildconfig
         self.ec2 = boto.connect_ec2(settings.ACCESS_KEY_ID, settings.SECRET_ACCESS_KEY)
         self.reservation = None
         self.instance_running = False
@@ -161,6 +166,10 @@ class AwsGunicornCentos(object):
         pip_cmd = '{bin}/pip install -r {requirements}'.format(bin=bin_dir, requirements=full_requirements_path)
         run(pip_cmd)
 
+        for package in self.required_python_packages:
+            pip_cmd = '{bin}/pip install {req}'.format(bin=bin_dir, req=package)
+            run(pip_cmd)
+
     @builder_fab
     def fix_permissions(self, path):
         sudo('chown -R {user} {path}'.format(user=self.user, path=path))
@@ -214,7 +223,8 @@ class AwsGunicornCentos(object):
         run('chmod 755 {0}'.format(supd_init_path))
 
 
-
+        sudo('ln -s {0} /etc/init.d/{1}-supervisord'.format(supd_init_path, self.project_name))
+        sudo('ln -s {0} /etc/rc3.d/S99{1}-supervisord'.format(supd_init_path, self.project_name))
 
     @builder_fab
     def configure_nginx(self):
@@ -236,7 +246,6 @@ class AwsGunicornCentos(object):
         sudo('service nginx restart')
 
 
-
     @builder_fab
     def remove_unwanted_packages(self):
         apt_cmd = 'apt-get -y remove ' + ' '.join(self.packages_to_remove)
@@ -249,3 +258,18 @@ class AwsGunicornCentos(object):
         self.install_requirements()
         self.configure_supervisord()
         self.configure_nginx()
+
+        self.is_deployed = True
+
+    def build(self, stop_instance=False):
+        if not self.is_deployed:
+            self.deploy()
+
+        if stop_instance:
+            self.instance.stop()
+
+        image_name = self.project_name + '-' + datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+        description = 'Image created by gungnir for {0}'.format(self.build_config.application.name)
+        self.ec2.create_image(self.instance.id, image_name, description, no_reboot=False)
+
+
