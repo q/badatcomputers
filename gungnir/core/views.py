@@ -38,3 +38,6 @@ class ProfileView(TemplateView):
             'aws_skey':profile.aws_skey,
         })
         return self.render_to_response({'form':form})
+
+class DashboardView(TemplateView):
+    template_name =  "core/dashboard.html"
