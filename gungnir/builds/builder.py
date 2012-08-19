@@ -80,7 +80,6 @@ class AwsGunicornUbuntu(object):
     required_python_packages = ['supervisor']
 
 
-    key_file = '/tmp/djangodash2012.pem'
     user = 'ubuntu'
 
     # Supervisord templates
@@ -96,7 +95,19 @@ class AwsGunicornUbuntu(object):
         self.project = buildconfig
         self.repo = buildconfig.repo
 
+        self.owner = buildconfig.application.owner
+
+        profile = self.owner.get_profile()
+        self.key_file = profile.ssh_key
+
+        access_key = profile.aws_akey or settings.SECRET_ACCESS_KEY
+        secret_key = profile.aws_skey or settings.SECRET_ACCESS_KEY
+
+        self.ec2 = boto.connect_ec2(access_key, secret_key)
+
         self.local_app_path =  self.repo.path_on_disk + '/*'
+
+
 
         self.venv_root = buildconfig.deploy_root
         self.project_name = buildconfig.application.name
@@ -111,7 +122,7 @@ class AwsGunicornUbuntu(object):
 
         self.instance = None
         self.build_config = buildconfig
-        self.ec2 = boto.connect_ec2(settings.ACCESS_KEY_ID, settings.SECRET_ACCESS_KEY)
+
         self.reservation = None
         self.instance_running = False
 
