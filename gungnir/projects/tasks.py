@@ -9,7 +9,6 @@ from gungnir.projects.models import Repo
 from gungnir.projects.utils import clone_repo
 
 
-
 def repo_app_hash(repo_url, app_name):
     return hashlib.sha1(app_name + repo_url).hexdigest()
 

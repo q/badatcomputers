@@ -1,11 +1,14 @@
 from django.db import models
 from gungnir.core.models import BaseModel
-
 from gungnir.builds.builder import AwsGunicornUbuntu
+
+from celery.execute import send_task
 OS_CHOICES = (
     (0, 'ubuntu'),
-    (1, 'centos'),
+    #(1, 'centos'),
     )
+
+
 
 class AwsBaseAmi(BaseModel):
     AMI_REGION_CHOICES = (
@@ -28,13 +31,16 @@ class AwsBaseAmi(BaseModel):
     aki_id = models.CharField(max_length=15, blank=True)
     description = models.TextField(blank=True)
 
+    def __unicode__(self):
+        return self.ami_id
+
 class BuildConfig(BaseModel):
     WEBSERVER_CHOICES = (
-        (0, 'apache'),
+    #   (0, 'apache'),
         (1, 'gunicorn'),
     )
     BUILD_TYPE_CHOICES = (
-        (0, 'Deploy'),
+    #    (0, 'Deploy'),
         (1, 'AWS AMI'),
     )
 
@@ -62,6 +68,9 @@ class BuildConfig(BaseModel):
     aws_keypair_name = models.CharField(max_length=32) # no idea how long these can be
     aws_ami_public = models.BooleanField(default=True)  # Set this to make the AMIs produced public
 
+    def __unicode__(self):
+        return u'configuration-' + u'-'.join([self.application.name, self.repo.short_name])
+
     def get_builder(self):
         return AwsGunicornUbuntu(self)
 
@@ -70,11 +79,41 @@ class Build(BaseModel):
     """
     once we've built an ami from a config, put it here...
     """
+
+    DEPLOY_STATES = (
+        ('NOT STARTED', 'NOT STARTED'),
+        ('WAITING FOR INSTANCE', 'WAITING FOR INSTANCE'),
+        ('CONFIGURING INSTANCE', 'CONFIGURING INSTANCE'),
+        ('COMPLETE', 'COMPLETE'),
+        ('FAILED', 'FAILED'),
+
+    )
+
     application = models.ForeignKey('projects.Application', related_name='builds')
     config = models.ForeignKey(BuildConfig)
     ami_id = models.CharField(max_length=15)
     instance_id = models.CharField(max_length=15)
     code_version = models.CharField(max_length=10, blank=True)
+
+    description = models.TextField()
+    build_date = models.DateTimeField(auto_now_add=True)
+
+    deploy_status = models.CharField(max_length=255, choices=DEPLOY_STATES, default='NOT STARTED')
+
+    def save(self, *args, **kwargs):
+        try:
+            async_task = kwargs.pop('async_task')
+
+        except KeyError:
+            async_task = True
+
+        results = super(Build, self).save(*args, **kwargs)
+
+        if async_task:
+            send_task('gungnir.builds.tasks.build_image', args=[self.config.pk])
+
+
+        return results
 
 #class Deploy()
 

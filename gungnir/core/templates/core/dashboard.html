@@ -7,12 +7,15 @@
 {% endblock %}
 
 {% block content %}
-    <header class="jumbotron subhead" id="overview">
+    <header class="jumbotron subhead" id="overview" xmlns="http://www.w3.org/1999/html">
         <h2>Application Dashboard</h2>
-        <br/>
+        <p>
+            <a class="btn btn-inverse" href="{% url gungnir-projects-application-create %}">
+            <i class="icon-plus icon-white"></i> Add Application</a>
+        </p>
     </header>
-    <a href="{% url gungnir-projects-application-create %}"><button class="btn">Add Application</button></a>
-    <br/><br/>
+    <br>
+
     {% for app in object_list %}
     <div class="page-header">
         <h2>{{ app.name }} ({{ app.get_app_type_display }})</h2>
@@ -48,7 +51,7 @@
                 </tbody>
             </table>
 
-            <a href="{% url gungnir-projects-repo-create %}"><button class="btn">Create</button></a>
+            <p><a href="{% url gungnir-projects-repo-create %}"  class="btn btn-primary btn-small"><i class="icon-magnet icon-white"></i> Link Repo</a></p>
         </div>
     </div>
     </div>
@@ -82,7 +85,8 @@
                 </tbody>
             </table>
 
-            <a href="{% url gungnir-projects-buildconfig-create %}"><button class="btn">Create</button></a>
+            <p><a href="{% url gungnir-projects-buildconfig-create %}"  class="btn btn-primary btn-small"><i class="icon-plus-sign icon-white"></i> Add Config</a></p>
+
         </div>
 
     </div>
@@ -116,7 +120,8 @@
                 {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url gungnir-projects-build-create %}"><button class="btn">Create</button></a>
+
+            <p><a href="{% url gungnir-projects-build-create %}"  class="btn btn-primary btn-small"><i class="icon-ok icon-white"></i> Make Build</a></p>
         </div>
     </div>
     </div>

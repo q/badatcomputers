@@ -30,7 +30,27 @@ class Repo(BaseModel):
     url = models.CharField(max_length=2048)
     branch = models.CharField(max_length=50, default='master')
     path_on_disk = models.CharField(max_length=1024, blank=True, null=True)
-    # requirements
+
+    class Meta:
+        unique_together = ('application', 'url', 'branch')
+
+    def __unicode__(self):
+        return self.branch + ' on ' + self.short_name
+
+
+    @property
+    def short_name(self):
+        return self.url.split('/')[-1]
+
+    def _branch_choices(self):
+        if not self.repo_exists():
+            return [('master', 'master')]
+        else:
+            branches = list()
+            for branch in self.branches():
+                branches.append((branch, branch))
+        return branches
+
 
     def repo_exists(self):
         """Determine if path_on_disk is a valid repo or not"""
@@ -54,16 +74,18 @@ class Repo(BaseModel):
         return branches
 
     def save(self, *args, **kwargs):
+        print 'SAVING...'
         try:
             async_task = kwargs.pop('async_task')
         except KeyError:
             async_task = True
         results = super(Repo, self).save(*args, **kwargs)
-        # Fire off a task to pull the repo and populate branch/path_on_disk, this should be done with a signal but i've had 8 hours sleep over hte past 40...
+
+        print 'ASYNC TASK IS {0}'.format(async_task)
+
 
         if async_task:
-
-            send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=[self.pk])
+            send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=[self.application.pk, self.url])
 
         return results
 
