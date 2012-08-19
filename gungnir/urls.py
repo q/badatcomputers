@@ -17,8 +17,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # celery task views
-    url(r'^tasks/builds/build_image/(?P<build_config_id>\d+)$', build_image_view),
-    url(r'^tasks/projects/pre_fetch_repo$', build_image_view),
+    url(r'^builds/tasks/build_image/(?P<build_config_id>\d+)$', build_image_view),
+
 
 
     # generic views

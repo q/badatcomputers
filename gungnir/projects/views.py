@@ -6,12 +6,13 @@ from django.shortcuts import get_object_or_404
 
 from gungnir.projects.models import Application, Repo
 from gungnir.projects.forms import ApplicationForm, RepoForm
-
+from gungnir.projects.tasks import pre_fetch_repo
 
 from djcelery.views import task_view
 
+
 # Wrapper to our celery task
-pre_fetch_repo_view = login_required(task_view(pre_fetch_repo))
+pre_fetch_repo_view = task_view(pre_fetch_repo)
 
 class ApplicationDetailView(DetailView):
     model = Application
