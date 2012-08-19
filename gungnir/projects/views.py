@@ -1,12 +1,12 @@
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import CreateView
+from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import get_object_or_404
 
 from gungnir.projects.models import Application, Repo
 from gungnir.projects.forms import ApplicationForm, RepoForm
-
 
 from djcelery.views import task_view
 
