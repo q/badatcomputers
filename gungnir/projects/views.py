@@ -184,7 +184,7 @@ class BuildConfigUpdate(UpdateView):
         return super(BuildConfigUpdate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
-        context = super(BuildConfigCreate, self).get_context_data(**kwargs)
+        context = super(BuildConfigUpdate, self).get_context_data(**kwargs)
         context['page_title'] = 'Update BuildConfig'
         context['page_header'] = 'Update BuildConfig'
         context['form_submit_text'] = 'Update'
