@@ -148,9 +148,12 @@ EMAIL_HOST_USER = 'badatcomputers@gmail.com'
 EMAIL_HOST_PASSWORD = 'fuckyou1!'
 
 # django-registration
-LOGIN_URL = "/account/login/"
+LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_ACTIVATION_DAYS = 3
+
+# profile
+AUTH_PROFILE_MODULE = 'core.Profile'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

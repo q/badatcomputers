@@ -12,6 +12,8 @@ class BaseModel(models.Model):
         get_latest_by = 'modified'
         
 class Profile(models.Model):
+    class Meta:
+        db_table = 'profile'
     user = models.OneToOneField(User)
     can_build = models.BooleanField(default=False, blank=True)
     aws_akey = models.CharField(max_length=64, blank=True)
