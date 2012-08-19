@@ -85,7 +85,7 @@ class Build(BaseModel):
         ('IN PROGRESS', 'IN PROGRESS'),
         ('WAITING FOR INSTANCE', 'WAITING FOR INSTANCE'),
         ('CONFIGURING INSTANCE', 'CONFIGURING INSTANCE'),
-        ('COMPLETE', 'COMPLETE'),
+        ('COMPLETED', 'COMPLETED'),
         ('FAILED', 'FAILED'),
 
     )

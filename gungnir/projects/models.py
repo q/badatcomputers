@@ -27,7 +27,7 @@ class Application(BaseModel):
 
 class Repo(BaseModel):
     application = models.ForeignKey(Application, related_name='repos')
-    url = models.CharField(max_length=2048)
+    url = models.CharField(max_length=500)
     branch = models.CharField(max_length=50, default='master')
     path_on_disk = models.CharField(max_length=1024, blank=True, null=True)
 
@@ -74,19 +74,14 @@ class Repo(BaseModel):
         return branches
 
     def save(self, *args, **kwargs):
-        print 'SAVING...'
         try:
             async_task = kwargs.pop('async_task')
         except KeyError:
             async_task = True
+
         results = super(Repo, self).save(*args, **kwargs)
 
-        print 'ASYNC TASK IS {0}'.format(async_task)
-
-
         if async_task:
-            print 'APP {0}'.format(self.application.pk)
-            print 'URL {0}'.format(self.url)
             send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=(self.application.pk, self.url))
 
         return results
