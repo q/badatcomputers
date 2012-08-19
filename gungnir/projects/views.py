@@ -83,17 +83,17 @@ class RepoUpdate(UpdateView):
     success_url=reverse_lazy('gungnir-core-dashboard')
     
     def get_object(self, queryset=None):
-        obj = Repo.objects.get(id=self.kwargs['id'])
+        obj = Repo.objects.get(id=self.kwargs['pk'])
         return obj
     
-    def get_form(self, form_class):
-        form = super(RepoUpdate,self).get_form(form_class)
-        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
-        return form
+#    def get_form(self, form_class):
+#        form = super(RepoUpdate,self).get_form(form_class)
+#        #form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+#        return form
 
-    def form_valid(self, form):
-        form.instance.application.owner = self.request.user
-        return super(RepoUpdate, self).form_valid(form)
+#    def form_valid(self, form):
+#        form.instance.application.owner = self.request.user
+#        return super(RepoUpdate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(RepoUpdate, self).get_context_data(**kwargs)
@@ -110,21 +110,27 @@ class BuildCreate(CreateView):
     form_class = BuildForm
     success_url=reverse_lazy('gungnir-core-dashboard')
 
+    def dispatch(self, *args, **kwargs):
+        self.app = get_object_or_404(Application, pk=kwargs.get('pk'))
+        return super(BuildCreate, self).dispatch(*args, **kwargs)
+
     def get_form(self, form_class):
         form = super(BuildCreate,self).get_form(form_class)
-        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+        form.fields['config'].queryset = BuildConfig.objects.filter(application=self.app)
         return form
 
     def form_valid(self, form):
-        form.instance.application.owner = self.request.user
-        messages.add_message(self.request, messages.INFO, 'Build is now in process. This can take up to 5 minutes.')
-        return super(BuildCreate, self).form_valid(form)
+        self.object = form.save(commit=False)
+        self.object.application = self.app
+        self.object.save()
+        messages.add_message(self.request, messages.INFO, 'Build is now in process. This can take up to 5 minutes. IN DJANGODASH TESTING THESE WILL GET DELETED AFTER HALF AN HOUR.')
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super(BuildCreate, self).get_context_data(**kwargs)
-        context['page_title'] = 'Link Build'
-        context['page_header'] = 'Link Build'
-        context['form_submit_text'] = 'Link'
+        context['page_title'] = 'Create Build'
+        context['page_header'] = 'Create Build for {0}'.format(self.app.name)
+        context['form_submit_text'] = 'Build'
         return context
         
 class BuildUpdate(UpdateView):
@@ -160,39 +166,45 @@ class BuildConfigCreate(CreateView):
     form_class = BuildConfigForm
     success_url=reverse_lazy('gungnir-core-dashboard')
 
+    def dispatch(self, *args, **kwargs):
+        self.app = get_object_or_404(Application, pk=kwargs.get('pk'))
+        return super(BuildConfigCreate, self).dispatch(*args, **kwargs)
+
     def get_form(self, form_class):
         form = super(BuildConfigCreate,self).get_form(form_class)
-        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+        form.fields['repo'].queryset = Repo.objects.filter(application=self.app)
         return form
 
     def form_valid(self, form):
-        form.instance.application.owner = self.request.user
-        return super(BuildConfigCreate, self).form_valid(form)
+        self.object = form.save(commit=False)
+        self.object.application = self.app
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super(BuildConfigCreate, self).get_context_data(**kwargs)
-        context['page_title'] = 'Link BuildConfig'
-        context['page_header'] = 'Link BuildConfig'
-        context['form_submit_text'] = 'Link'
+        context['page_title'] = 'Add BuildConfig'
+        context['page_header'] = 'Add BuildConfig to {0}'.format(self.app.name)
+        context['form_submit_text'] = 'Add'
         return context
 
 class BuildConfigUpdate(UpdateView):
     model = BuildConfig
     form_class = BuildConfigForm
     success_url=reverse_lazy('gungnir-core-dashboard')
-    
+
+#    def dispatch(self, *args, **kwargs):
+#        self.app = get_object_or_404(Application, pk=kwargs.get('pk'))
+#        return super(BuildConfigUpdate, self).dispatch(*args, **kwargs)
+
     def get_object(self, queryset=None):
-        obj = BuildConfig.objects.get(id=self.kwargs['id'])
+        obj = BuildConfig.objects.get(id=self.kwargs['pk'], application__owner=self.request.user)
         return obj
 
     def get_form(self, form_class):
         form = super(BuildConfigUpdate,self).get_form(form_class)
-        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+        form.fields['repo'].queryset = Repo.objects.filter(application=self.object.application)
         return form
-
-    def form_valid(self, form):
-        form.instance.application.owner = self.request.user
-        return super(BuildConfigUpdate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(BuildConfigUpdate, self).get_context_data(**kwargs)
