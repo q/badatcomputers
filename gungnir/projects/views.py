@@ -24,20 +24,20 @@ class ApplicationDetailView(DetailView):
 #        return context
 
 class ApplicationCreate(CreateView):
-        model = Application
-        form_class = ApplicationForm
-        success_url=reverse_lazy('gungnir-core-dashboard')
+    model = Application
+    form_class = ApplicationForm
+    success_url=reverse_lazy('gungnir-core-dashboard')
 
-        def form_valid(self, form):
-            form.instance.owner = self.request.user
-            return super(ApplicationCreate, self).form_valid(form)
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super(ApplicationCreate, self).form_valid(form)
 
-        def get_context_data(self, **kwargs):
-            context = super(ApplicationCreate, self).get_context_data(**kwargs)
-            context['page_title'] = 'Create Application'
-            context['page_header'] = 'Create Application'
-            context['form_submit_text'] = 'Create'
-            return context
+    def get_context_data(self, **kwargs):
+        context = super(ApplicationCreate, self).get_context_data(**kwargs)
+        context['page_title'] = 'Create Application'
+        context['page_header'] = 'Create Application'
+        context['form_submit_text'] = 'Create'
+        return context
 
 class RepoDetailView(DetailView):
     model = Repo
@@ -46,7 +46,6 @@ class RepoCreate(CreateView):
     model = Repo
     form_class = RepoForm
     success_url=reverse_lazy('gungnir-core-dashboard')
-
 
     def get_form(self, form_class):
         form = super(RepoCreate,self).get_form(form_class)
