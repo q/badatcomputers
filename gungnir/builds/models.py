@@ -82,6 +82,7 @@ class Build(BaseModel):
 
     DEPLOY_STATES = (
         ('NOT STARTED', 'NOT STARTED'),
+        ('IN PROGRESS', 'IN PROGRESS'),
         ('WAITING FOR INSTANCE', 'WAITING FOR INSTANCE'),
         ('CONFIGURING INSTANCE', 'CONFIGURING INSTANCE'),
         ('COMPLETE', 'COMPLETE'),
@@ -111,6 +112,7 @@ class Build(BaseModel):
 
         if async_task:
             send_task('gungnir.builds.tasks.build_image', args=[self.config.pk])
+
 
 
         return results

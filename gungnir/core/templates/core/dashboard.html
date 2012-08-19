@@ -27,15 +27,13 @@
 
         <div class="well">
             <h4>Repos</h4>
-            button to add repo here, shoudl we list # of attached repos?
-
 
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>id? something to link to</th>
-                    <th>repo url</th>
-                    <th>watched branch</th>
+                    <th>id</th>
+                    <th>Repo URL</th>
+                    <th>Watched Branch</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -60,15 +58,14 @@
     <div class="span9">
         <div class="well">
             <h4>BuildConfigs</h4>
-            button to add buildconfig here, shoudl we list # of build configs?
 
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>repo entry</th>
-                    <th>os</th>
-                    <th>webserver</th>
-                    <th>build type</th>
+                    <th>Repo</th>
+                    <th>OS</th>
+                    <th>Web Server</th>
+                    <th>Build Type</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -98,15 +95,15 @@
 
         <div class="well">
             <h4>Builds</h4>
-            button to add create build here, shoudl we list # of builds?
 
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>build config</th>
-                    <th>instance / ami_id</th>
-                    <th>create time</th>
-                    <th></th>
+                    <th>Build Config</th>
+                    <th>Instance / AMI Id</th>
+                    <th>Create Time</th>
+                    <th>Build Status</th>
+{#                    <th></th>#}
                 </tr>
                 </thead>
                 <tbody>
@@ -115,13 +112,14 @@
                     <td><a href="/projects/build/{{ build.id }}/">{{ build.config }}</a></td>
                     <td>{{ build.ami_id }} {{ build.instance_id }}</td>
                     <td>{{ build.created|date:"D d M Y" }}</td>
-                    <td><a href="/projects/build/update/{{ build.id }}/"><button class="btn">Edit</button></a></td>
+                    <td>{{ build.deploy_status }}</td>
+{#                    <td><a href="/projects/build/update/{{ build.id }}/"><button class="btn">Edit</button></a></td>#}
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
 
-            <p><a href="{% url gungnir-projects-build-create %}"  class="btn btn-primary btn-small"><i class="icon-ok icon-white"></i> Make Build</a></p>
+            <p><a href="{% url gungnir-projects-build-create %}"  class="btn btn-info btn-small"><i class="icon-ok icon-white"></i> Make Build</a></p>
         </div>
     </div>
     </div>

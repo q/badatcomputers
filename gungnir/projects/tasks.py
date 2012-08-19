@@ -14,9 +14,9 @@ def repo_app_hash(repo_url, app_name):
 
 
 @task
-def fetch_repo_for_existing_entry(repo_id):
+def fetch_repo_for_existing_entry(app_pk, url):
 
-    repo = Repo.objects.get(pk=repo_id)
+    repo = Repo.objects.get(application__pk=app_pk, url=url)
 
     if repo.repo_exists() and not os.path.exists():
         repo_path = repo.path_on_disk
@@ -24,7 +24,7 @@ def fetch_repo_for_existing_entry(repo_id):
     else:
         repo_path, branches = pre_fetch_repo(repo.url, repo.application.name)
 
-    print 'REPO PATH IS: {0}'.format(repo_path)
+
     git_repo = GitRepo(repo_path)
 
     current_head = git_repo.head
@@ -36,7 +36,7 @@ def fetch_repo_for_existing_entry(repo_id):
     repo.path_on_disk = repo_path
     repo.save(async_task=False)
 
-    return repo_id, repo_path
+    return repo.pk, repo_path
 
 
 @task
