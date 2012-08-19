@@ -11,7 +11,7 @@ from gungnir.projects.utils import clone_repo
 
 
 def repo_app_hash(repo_url, app_name):
-    return hashlib.sha1(app_name + git_url).hexdigest()
+    return hashlib.sha1(app_name + repo_url).hexdigest()
 
 
 @task
@@ -19,11 +19,13 @@ def fetch_repo_for_existing_entry(repo_id):
 
     repo = Repo.objects.get(pk=repo_id)
 
-    if not self.repo_exists():
-        repo_path, branches = pre_fetch_repo(repo_url, app_name)
-    else:
+    if repo.repo_exists() and not os.path.exists():
         repo_path = repo.path_on_disk
 
+    else:
+        repo_path, branches = pre_fetch_repo(repo.url, repo.application.name)
+
+    print 'REPO PATH IS: {0}'.format(repo_path)
     git_repo = GitRepo(repo_path)
 
     current_head = git_repo.head
@@ -33,7 +35,7 @@ def fetch_repo_for_existing_entry(repo_id):
         desired_head.checkout()
 
     repo.path_on_disk = repo_path
-    repo.save()
+    repo.save(async_task=False)
 
     return repo_id, repo_path
 
@@ -45,6 +47,9 @@ def pre_fetch_repo(repo_url, app_name):
     repo_path_hash = repo_app_hash(repo_url, app_name)
 
     repo_path = os.path.join(settings.REPO_ROOT,  repo_path_hash)
+
+    if os.path.exists(repo_path):
+        return repo_path, []
 
     repo = clone_repo(repo_url, local_path=repo_path)
 

@@ -5,9 +5,11 @@ from gungnir.core.models import BaseModel
 
 
 from git import Repo as GitRepo
-#from gungnir.projects.tasks import fetch_repo_for_existing_entry
+
 from celery.execute import send_task
-from os import path
+from gungnir.projects.utils import iter_find_files
+
+import os
 
 class Application(BaseModel):
     PROJECT_TYPE_CHOICES = (
@@ -27,12 +29,15 @@ class Repo(BaseModel):
     application = models.ForeignKey(Application, related_name='repos')
     url = models.CharField(max_length=2048)
     branch = models.CharField(max_length=50, default='master')
-    path_on_disk = models.CharField(max_length=1024)
+    path_on_disk = models.CharField(max_length=1024, blank=True, null=True)
     # requirements
 
     def repo_exists(self):
         """Determine if path_on_disk is a valid repo or not"""
         try:
+            if not os.path.exists(self.path_on_disk):
+                return False
+
             GitRepo(self.path_on_disk)
             return True
 
@@ -49,9 +54,24 @@ class Repo(BaseModel):
         return branches
 
     def save(self, *args, **kwargs):
-
-        results = super(Application, self).save(*args, **kwargs)
+        try:
+            async_task = kwargs.pop('async_task')
+        except KeyError:
+            async_task = True
+        results = super(Repo, self).save(*args, **kwargs)
         # Fire off a task to pull the repo and populate branch/path_on_disk, this should be done with a signal but i've had 8 hours sleep over hte past 40...
-        send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=[self.repo_id])
+
+        if async_task:
+
+            send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=[self.pk])
 
         return results
+
+    def possible_requirement_files(self):
+        requirements_glob = 'requirements.txt'
+        iter_find_files(self.path_on_disk, 'requirements*' )
+
+
+    def possible_settings_files(self):
+        settings_glob = '*settings*py'
+        iter_find_files(self.path_on_disk, 'settings')

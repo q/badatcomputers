@@ -37,3 +37,4 @@ def switch_repo_branch(repo_path, new_branch_name, current_branch_name):
     new_branch.checkout()
 
     return Repo(repo_path)
+
