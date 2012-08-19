@@ -99,6 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     )
 
 ROOT_URLCONF = 'gungnir.urls'
@@ -130,6 +131,7 @@ INSTALLED_APPS = (
     'registration',
     'south',
     'emailusernames',
+    'debug_toolbar',
 
     # Our Apps
     'gungnir.core',
@@ -208,3 +210,5 @@ CELERY_TASK_SERIALIZER = 'json'
 
 # Path under which all downloaded repos will be stored
 REPO_ROOT = '/tmp'
+
+INTERNAL_IPS = ('127.0.0.1',)
