@@ -39,8 +39,8 @@ class BuildConfig(BaseModel):
     )
 
     parent_config = models.ForeignKey('self', blank=True, null=True)
-    application = models.ForeignKey('projects.Application')
-    repo = models.ForeignKey('projects.Repo')
+    application = models.ForeignKey('projects.Application', related_name='buildconfigs')
+    repo = models.ForeignKey('projects.Repo', related_name='buildconfigs')
 
     os = models.PositiveSmallIntegerField(choices=OS_CHOICES, default=1)
     webserver = models.PositiveSmallIntegerField(choices=WEBSERVER_CHOICES, default=1)
@@ -70,6 +70,7 @@ class Build(BaseModel):
     """
     once we've built an ami from a config, put it here...
     """
+    application = models.ForeignKey('projects.Application', related_name='builds')
     config = models.ForeignKey(BuildConfig)
     ami_id = models.CharField(max_length=15)
     instance_id = models.CharField(max_length=15)
