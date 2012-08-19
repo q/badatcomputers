@@ -1,12 +1,14 @@
 from django.conf.urls import patterns, include, url
 
-## Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+admin.autodiscover()
+
 from core.forms import CompatEmailUserCreationForm
 from emailusernames.forms import EmailAuthenticationForm
+
 from builds.views import *
+
 from projects.views import *
-admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
@@ -14,7 +16,10 @@ urlpatterns = patterns('',
     url(r'^', include('gungnir.core.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    
+
+    # celery task views
+    url(r'^tasks/builds/build_image/(?P<build_config_id>\d+)$', build_image_view),
+
     # generic views
     (r'^AwsBaseAmi/$',AwsBaseAmiView.as_view()),
     (r'^BuildConfig/$',BuildConfigView.as_view()),
@@ -24,7 +29,7 @@ urlpatterns = patterns('',
     (r'^Repo/$',RepoView.as_view()),
     
     # django-celery
-    url(r'^djcelery/', include('djcelery.urls')),
+    url(r'^celery/', include('djcelery.urls')),
     
     # django-registration
     url(r'^accounts/register/$',

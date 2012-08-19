@@ -1,0 +1,1 @@
+AMI creation for {{ project_name }} has completed.

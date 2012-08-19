@@ -1,6 +1,7 @@
 from django.db import models
 from gungnir.core.models import BaseModel
 
+from gungnir.builds.builder import AwsGunicornUbuntu
 OS_CHOICES = (
     (0, 'ubuntu'),
     (1, 'centos'),
@@ -37,7 +38,7 @@ class BuildConfig(BaseModel):
         (1, 'AWS AMI'),
     )
 
-    parent_config = models.ForeignKey('self')
+    parent_config = models.ForeignKey('self', blank=True, null=True)
     application = models.ForeignKey('projects.Application')
     repo = models.ForeignKey('projects.Repo')
 
@@ -45,11 +46,14 @@ class BuildConfig(BaseModel):
     webserver = models.PositiveSmallIntegerField(choices=WEBSERVER_CHOICES, default=1)
     build_type = models.PositiveIntegerField(choices=BUILD_TYPE_CHOICES, default=1)
 
-    requirements = models.ManyToManyField('PythonRequirements')
-    use_virtualenv = models.BooleanField(default=False) # dont use for now...
+    # Virtual Env Stuff
+    venv_requirements = models.CharField(max_length='256', default='requirements.txt')#models.ManyToManyField('PythonRequirements', blank=True, null=True)
+    use_virtualenv = models.BooleanField(default=True) # dont use for now...
     deploy_root	 = models.CharField(max_length='256', default='/opt/venvs') # Location venvs will reside
 
     # django specific
+    django_settings = models.CharField(max_length=256, default='settings') # Python path to settings file, will be used for configs
+
     static_root = models.CharField(max_length=256, blank=True) # Location of static root, None value will result in no files being served from the AMI
     media_root = models.CharField(max_length=256, blank=True) # Location of media root, None value will result in no files being served from the AMI
 
@@ -58,12 +62,17 @@ class BuildConfig(BaseModel):
     aws_keypair_name = models.CharField(max_length=32) # no idea how long these can be
     aws_ami_public = models.BooleanField(default=True)  # Set this to make the AMIs produced public
 
+    def get_builder(self):
+        return AwsGunicornUbuntu(self)
+
+
 class Build(BaseModel):
     """
     once we've built an ami from a config, put it here...
     """
     config = models.ForeignKey(BuildConfig)
     ami_id = models.CharField(max_length=15)
+    instance_id = models.CharField(max_length=15)
     code_version = models.CharField(max_length=10, blank=True)
 
 #class Deploy()

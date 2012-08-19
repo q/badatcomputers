@@ -1,0 +1,28 @@
+[
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "badatcomputers@gmail.com", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2012-08-19T03:45:30.667Z", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "pbkdf2_sha256$10000$H3WOYgDVcBvr$WWOq4TGqtf3nQMbDNKvRRKFdZHdIJbRyCvb1DI7pxQc=", 
+            "email": "badatcomputers@gmail.com", 
+            "date_joined": "2012-08-19T03:45:30.667Z"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "ec2-50-19-70-54.compute-1.amazonaws.com", 
+            "name": "ec2-50-19-70-54.compute-1.amazonaws.com"
+        }
+    }
+]

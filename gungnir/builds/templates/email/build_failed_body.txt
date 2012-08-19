@@ -1,0 +1,3 @@
+Your build failed with the following error:
+
+{{ error }}
