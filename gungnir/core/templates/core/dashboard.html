@@ -9,10 +9,10 @@
 {% block content %}
     <header class="jumbotron subhead" id="overview">
         <h2>Application Dashboard</h2>
-        <p><br></p>
+        <br/>
     </header>
-
-
+    <a href="{% url gungnir-projects-application-create %}"><button class="btn">Add Application</button></a>
+    <br/><br/>
     {% for app in object_list %}
     <div class="page-header">
         <h2>{{ app.name }} ({{ app.get_app_type_display }})</h2>
@@ -39,7 +39,7 @@
                 <tbody>
                 {% for  repo in app.repos.all %}
                 <tr>
-                    <td>{{ repo.id }}</td>
+                    <td><a href="/projects/repo/{{ repo.id }}/">{{ repo.id }}</a></td>
                     <td>{{ repo.url }}</td>
                     <td>{{ repo.branch }}</td>
                     <td><a href="/projects/repo/update/{{ repo.id }}/"><button class="btn">Edit</button></a></td>
@@ -72,7 +72,7 @@
                 <tbody>
                 {% for buildconfig in app.buildconfigs.all %}
                 <tr>
-                    <td>{{ buildconfig.repo }}</td>
+                    <td><a href="/projects/buildconfig/{{ buildconfig.id }}/">{{ buildconfig.repo }}</a></td>
                     <td>{{ buildconfig.get_os_display }}</td>
                     <td>{{ buildconfig.get_webserver_display }}</td>
                     <td>{{ buildconfig.get_build_type_display }}</td>
@@ -108,7 +108,7 @@
                 <tbody>
                 {% for build in app.builds.all %}
                 <tr>
-                    <td>{{ build.config }}</td>
+                    <td><a href="/projects/build/{{ build.id }}/">{{ build.config }}</a></td>
                     <td>{{ build.ami_id }} {{ build.instance_id }}</td>
                     <td>{{ build.created|date:"D d M Y" }}</td>
                     <td><a href="/projects/build/update/{{ build.id }}/"><button class="btn">Edit</button></a></td>

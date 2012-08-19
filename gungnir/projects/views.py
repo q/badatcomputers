@@ -90,7 +90,10 @@ class RepoUpdate(UpdateView):
         context['page_header'] = 'Update Repo'
         context['form_submit_text'] = 'Update'
         return context
-        
+
+class BuildDetailView(DetailView):
+    model = Build
+
 class BuildCreate(CreateView):
     model = Build
     form_class = BuildForm
@@ -136,7 +139,10 @@ class BuildUpdate(UpdateView):
         context['page_header'] = 'Update Build'
         context['form_submit_text'] = 'Update'
         return context
-        
+
+class BuildConfigDetailView(DetailView):
+    model = BuildConfig
+ 
 class BuildConfigCreate(CreateView):
     model = BuildConfig
     form_class = BuildConfigForm

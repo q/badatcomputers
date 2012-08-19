@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.decorators import login_required
 
-from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate, RepoUpdate, RepoDetailView, pre_fetch_repo_view, BuildCreate, BuildUpdate, BuildConfigCreate, BuildConfigUpdate
+from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate, RepoUpdate, RepoDetailView, pre_fetch_repo_view, BuildDetailView, BuildCreate, BuildUpdate, BuildConfigDetailView, BuildConfigCreate, BuildConfigUpdate
 #from gungnir.core.views import ProfileView, DashboardView
 
 
@@ -13,6 +13,7 @@ urlpatterns = patterns('gungnir.projects.views',
     url(r'^application/(?P<pk>\d+)/$',
         login_required(ApplicationDetailView.as_view()),
         name='gungnir-projects-application-detail'),
+    
     url(r'^repo/add/$',
         login_required(RepoCreate.as_view()),
         name='gungnir-projects-repo-create'),
@@ -29,6 +30,9 @@ urlpatterns = patterns('gungnir.projects.views',
     url(r'^build/update/(?P<id>\d+)/$',
         login_required(BuildUpdate.as_view()),
         name='gungnir-projects-build-update'),
+    url(r'^build/(?P<id>\d+)/$',
+        login_required(BuildDetailView.as_view()),
+        name='gungnir-projects-build-detail'),
         
     url(r'^buildconfig/add/$',
         login_required(BuildConfigCreate.as_view()),
@@ -36,6 +40,9 @@ urlpatterns = patterns('gungnir.projects.views',
     url(r'^buildconfig/update/(?P<id>\d+)/$',
         login_required(BuildConfigUpdate.as_view()),
         name='gungnir-projects-buildconfig-update'),
+    url(r'^buildconfig/(?P<id>\d+)/$',
+        login_required(BuildConfigDetailView.as_view()),
+        name='gungnir-projects-buildconfig-detail'),
     
     url(r'^tasks/pre_fetch_repo$', login_required(pre_fetch_repo_view)),
 
