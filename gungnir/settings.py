@@ -1,5 +1,7 @@
 import time
 import os
+from django.core.urlresolvers import reverse_lazy
+
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DEBUG = True
@@ -140,6 +142,15 @@ AUTHENTICATION_BACKENDS = (
     'emailusernames.backends.EmailAuthBackend',
 )
 
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.CryptPasswordHasher',
+)
+
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -149,7 +160,7 @@ EMAIL_HOST_PASSWORD = 'fuckyou1!'
 
 # django-registration
 LOGIN_URL = "/accounts/login/"
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = reverse_lazy('gungnir-core-dashboard')
 ACCOUNT_ACTIVATION_DAYS = 3
 
 # profile
