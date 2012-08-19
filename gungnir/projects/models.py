@@ -85,7 +85,9 @@ class Repo(BaseModel):
 
 
         if async_task:
-            send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=[self.application.pk, self.url])
+            print 'APP {0}'.format(self.application.pk)
+            print 'URL {0}'.format(self.url)
+            send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=(self.application.pk, self.url))
 
         return results
 
