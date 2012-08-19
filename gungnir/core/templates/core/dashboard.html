@@ -44,6 +44,7 @@
                     <th>Repo URL</th>
                     <th>Watched Branch</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,6 +54,12 @@
                     <td>{{ repo.url }}</td>
                     <td>{{ repo.branch }}</td>
                     <td><a href="/projects/repo/update/{{ repo.id }}/"><button class="btn">Edit</button></a></td>
+                    <td>
+                        <form method="POST" action="/projects/repo/delete/{{ repo.id }}/">
+                            {% csrf_token %}
+                            <input type="submit" value="Delete" class="btn"/>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -76,6 +83,7 @@
                     <th>Web Server</th>
                     <th>Build Type</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -86,6 +94,12 @@
                     <td>{{ buildconfig.get_webserver_display }}</td>
                     <td>{{ buildconfig.get_build_type_display }}</td>
                     <td><a href="/projects/buildconfig/update/{{ buildconfig.id }}/"><button class="btn">Edit</button></a></td>
+                    <td>
+                        <form method="POST" action="/projects/buildconfig/delete/{{ buildconfig.id }}/">
+                            {% csrf_token %}
+                            <input type="submit" value="Delete" class="btn"/>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -113,6 +127,7 @@
                     <th>Create Time</th>
                     <th>Build Status</th>
 {#                    <th></th>#}
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -123,6 +138,12 @@
                     <td>{{ build.created|date:"D d M Y" }}</td>
                     <td>{{ build.deploy_status }}</td>
 {#                    <td><a href="/projects/build/update/{{ build.id }}/"><button class="btn">Edit</button></a></td>#}
+                    <td>
+                        <form method="POST" action="/projects/build/delete/{{ build.id }}/">
+                            {% csrf_token %}
+                            <input type="submit" value="Delete" class="btn"/>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>
