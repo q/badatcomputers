@@ -182,7 +182,7 @@ class BuildConfigUpdate(UpdateView):
     success_url=reverse_lazy('gungnir-core-dashboard')
     
     def get_object(self, queryset=None):
-        obj = BuildConfig.objects.get(id=self.kwargs['id'])
+        obj = BuildConfig.objects.get(pk=self.kwargs['pk'])
         return obj
 
     def get_form(self, form_class):
