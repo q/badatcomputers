@@ -16,8 +16,8 @@ BUILD_FAILED_BODY = 'email/build_failed_body.txt'
 
 
 @task
-def build_image(build_id):
-    build = Build.objects.get(pk=build_id)
+def build_image(application_pk, url):
+    build = Build.objects.get(application__pk=application_pk, url=url)
 
     build_config = build.config
 

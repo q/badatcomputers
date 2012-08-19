@@ -74,16 +74,18 @@ class Repo(BaseModel):
         return branches
 
     def save(self, *args, **kwargs):
+        print 'SAVING...'
         try:
             async_task = kwargs.pop('async_task')
         except KeyError:
             async_task = True
         results = super(Repo, self).save(*args, **kwargs)
-        # Fire off a task to pull the repo and populate branch/path_on_disk, this should be done with a signal but i've had 8 hours sleep over hte past 40...
+
+        print 'ASYNC TASK IS {0}'.format(async_task)
+
 
         if async_task:
-
-            send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=[self.pk])
+            send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=[self.application.pk, self.url])
 
         return results
 
