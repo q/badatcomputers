@@ -11,3 +11,6 @@ class ProfileView(TemplateView):
     
     def get(self, request):
         return self.render_to_response({'form':ProfileForm})
+
+class DashboardView(TemplateView):
+    template_name =  "core/dashboard.html"
