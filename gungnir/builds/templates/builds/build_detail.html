@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+
+{% load obj_data %}
+{% load i18n %}
+
+{% block title %}{{ object|to_class_name }} Details{% endblock %}
+
+{% block extrajs %}
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ object|to_class_name }}</h1>
+    </div>
+    <div class="row">
+        <div class="span8">
+            <p>Application: {{ object.application }}</p>
+            <p>AMI ID: {{ object.ami_id }}</p>
+            <p>Instance ID: {{ object.instance_id }}</p>
+            <p>Code Version: {{ object.code_version }}</p>
+            <p>Build Status: {{ object.deploy_status }}</p>
+            <p>Description: {{ object.description }}</p>
+        </div>
+    </div>
+{% endblock content %}
