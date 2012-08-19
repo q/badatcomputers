@@ -173,26 +173,44 @@ class AwsGunicornCentos(object):
         context['project_root'] = self.project_root
         context['venv_root'] = self.venv_root
         context['commands'] = None
+        context['project_static_root'] = self.project_static_root
+        context['project_media_root'] = self.project_media_root
 
         return context
+
+    def _host_string(self):
+        return '{user}@{host}:22'.format(user=self.user, host=self.instance.public_dns_name)
+
+    def _push_config(self, config_string, path):
+        from fabric.state import connections
+
+        ssh = connections[self._host_string()]
+
+        sftp = ssh.open_sftp()
+
+        remote_file = sftp.open(path, 'rw+')
+        remote_file.write(config_string)
+        remote_file.close()
+
+
 
     @builder_fab
     def configure_supervisord(self):
         context = self._get_template_context()
-        supd_conf = StringIO(render_to_string(self.supd_conf_template, context))
+        supd_conf = render_to_string(self.supd_conf_template, context)
 
-        supd_init = StringIO(render_to_string(self.supd_init_template, context))
+        supd_init = render_to_string(self.supd_init_template, context)
 
         venv_path = os.path.join(self.venv_root, self.project_name)
         etc_path = os.path.join(venv_path, 'etc')
         bin_path = os.path.join(venv_path, 'bin')
 
         supd_conf_path = os.path.join(etc_path, 'supervisord.conf')
-        put(supd_conf, supd_conf_path)
-
+        self._push_config(supd_conf, supd_conf_path)
+        run('chmod 644 {0}'.format(supd_conf_path))
 
         supd_init_path = os.path.join(bin_path, '{0}-supervisord'.format(self.project_name))
-        put(supd_init, supd_init_path)
+        self._push_config(supd_init, supd_init_path)
         run('chmod 755 {0}'.format(supd_init_path))
 
 
@@ -201,16 +219,18 @@ class AwsGunicornCentos(object):
     @builder_fab
     def configure_nginx(self):
         context = self._get_template_context()
-        nginx_conf = StringIO(render_to_string(self.nginx_conf_template, context))
+        nginx_conf = render_to_string(self.nginx_conf_template, context)
 
         nginx_conf_dir = '/etc/nginx/sites-available/'
         nginx_conf_fname = self.project_name + '.conf'
         nginx_conf_path = os.path.join(nginx_conf_dir, nginx_conf_fname )
 
+
         tmp_nginx_conf = os.path.join('/tmp', nginx_conf_fname)
 
-        put(nginx_conf, tmp_nginx_conf)
+        self._push_config(nginx_conf, tmp_nginx_conf)
 
+        sudo('rm /etc/nginx/sites-enabled/default')
         sudo('mv {tmp_config} {perm_config}'.format(tmp_config=tmp_nginx_conf, perm_config=nginx_conf_path))
         sudo('ln -s {0} /etc/nginx/sites-enabled/{1}'.format(nginx_conf_path, nginx_conf_fname))
         sudo('service nginx restart')

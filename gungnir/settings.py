@@ -1,3 +1,4 @@
+import time
 import os
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -180,6 +181,16 @@ LOGGING = {
         }
 }
 
+# RMQ
+BROKER_HOST = 'ec2-50-19-70-54.compute-1.amazonaws.com'
+BROKER_PORT = 5672
+BROKER_USER = 'gungnir'
+BROKER_PASSWORD = 'XXX'
+BROKER_VHOST = '/gungnir'
+
+CELERY_RESULT_BACKEND = 'amqp'
+CELERY_DISABLE_RATE_LIMITS = True
+CELERY_TASK_SERIALIZER = 'json'
 
 # Path under which all downloaded repos will be stored
 REPO_ROOT = '/tmp'

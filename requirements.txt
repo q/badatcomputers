@@ -9,7 +9,7 @@ celery==3.0.5
 django-celery==3.0.4
 django-extensions==0.9
 django-registration==0.8
-dulwich==0.8.5
+GitPython==0.3.2.RC1
 gunicorn==0.14.6
 kombu==2.3.2
 pycrypto==2.6
@@ -17,3 +17,4 @@ python-dateutil==1.5
 ssh==1.7.14
 wsgiref==0.1.2
 django-email-as-username==1.5.1
+py-bcrypt==0.2
