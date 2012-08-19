@@ -24,6 +24,7 @@
         </div>
         {% endfor %}
     {% endif %}
+    
     {% for app in object_list %}
     <div class="page-header">
         <h2>{{ app.name }} ({{ app.get_app_type_display }})</h2>
