@@ -1,0 +1,9 @@
+{% extends "core/form.html" %}
+
+{% block extrajs %}
+    <script type="text/javascript">
+        $().ready(function() {
+            $("input#id_name").focus();
+        });
+    </script>
+{% endblock %}
