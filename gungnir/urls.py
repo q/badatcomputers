@@ -31,7 +31,7 @@ urlpatterns = patterns('',
     # django-celery
     url(r'^celery/', include('djcelery.urls')),
     
-    # django-registration
+    # django-registration - this is retarded how they suggest you override these. fact, you should just not include these urls...
     url(r'^accounts/register/$',
         'registration.views.register',
         {
@@ -41,9 +41,9 @@ urlpatterns = patterns('',
         name='registration_register'),
     url(r'^accounts/login/$',
         'django.contrib.auth.views.login',
-        {
-            'authentication_form': EmailAuthenticationForm,
-        },
-        name='registration_register'),
-    (r'^accounts/', include('registration.urls')),
+        {'authentication_form': EmailAuthenticationForm,},
+        name='auth_login'),
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='auth_logout'),
+    # this has to be last, so stupid.
+    (r'^accounts/', include('registration.backends.default.urls')),
 )
