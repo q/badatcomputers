@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extrajs %}
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ page_header }}</h1>
+    </div>
+    <div class="row">
+    <div class="span8">
+        <form method="POST" class="form-horizontal well" action="">
+            <fieldset>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="control-group{% if field.errors %} error{% endif %}">
+                        <label class="control-label" for="{{ field.html_name }}">{{ field.label }}</label>
+                        <div class="controls">
+                            {{ field }} {% if field.errors %}<span class="help-inline">{{ field.errors }}</span>{% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">{{ form_submit_text }}</button>
+                </div>
+            </fieldset>
+
+        </form>
+    </div>
+    </div>
+{% endblock content %}

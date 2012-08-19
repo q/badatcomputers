@@ -1,9 +1,11 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.views.generic import TemplateView
-from gungnir.core.forms import ProfileForm
+from django.views.generic import TemplateView, ListView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+
+from gungnir.core.forms import ProfileForm
+from gungnir.projects.models import Application, Repo
 
 def index(request):
     return render_to_response('core/base.html', {}, context_instance=RequestContext(request))
@@ -40,4 +42,13 @@ class ProfileView(TemplateView):
         return self.render_to_response({'form':form})
 
 class DashboardView(TemplateView):
+    template_name =  "core/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        context['app_list'] = Application.objects.filter(owner=self.request.user)
+        return context
+
+class DashboardListView(ListView):
+    model = Application
     template_name =  "core/dashboard.html"
