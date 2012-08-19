@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+
+{% load obj_data %}
+{% load i18n %}
+
+{% block title %}{{ object|to_class_name }} Details{% endblock %}
+
+{% block extrajs %}
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ object|to_class_name }}</h1>
+    </div>
+    <div class="row">
+        <div class="span8">
+            <p>Application: {{ object.application.name }}</p>
+            <p>Url: {{ object.url }}</p>
+            <p>Branch: {{ object.branch }}</p>
+            <p>Linked On: {{ object.created|date:"D d M Y" }}</p>
+        </div>
+    </div>
+{% endblock content %}

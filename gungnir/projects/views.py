@@ -1,9 +1,10 @@
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import CreateView
 
 from django.shortcuts import get_object_or_404
 
-from gungnir.projects.models import Application
+from gungnir.projects.models import Application, Repo
 from gungnir.projects.forms import ApplicationForm, RepoForm
 
 class RepoView(TemplateView):
@@ -20,10 +21,10 @@ class ApplicationDetailView(DetailView):
 #        context = super(ApplicationDetailView, self).get_context_data(**kwargs)
 #        return context
 
-
 class ApplicationCreate(CreateView):
         model = Application
         form_class = ApplicationForm
+        success_url=reverse_lazy('gungnir-core-dashboard')
 
         def form_valid(self, form):
             form.instance.owner = self.request.user
@@ -36,15 +37,24 @@ class ApplicationCreate(CreateView):
             context['form_submit_text'] = 'Create'
             return context
 
-#class AuthorDetailView(DetailView):
-#
-#    queryset = Author.objects.all()
-#
-#    def get_object(self):
-#        # Call the superclass
-#        object = super(AuthorDetailView, self).get_object()
-#        # Record the last accessed date
-#        object.last_accessed = timezone.now()
-#        object.save()
-#        # Return the object
-#        return object
+class RepoCreate(CreateView):
+    model = Repo
+    form_class = RepoForm
+    success_url=reverse_lazy('gungnir-core-dashboard')
+
+
+    def get_form(self, form_class):
+        form = super(RepoCreate,self).get_form(form_class)
+        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+        return form
+
+    def form_valid(self, form):
+        form.instance.application.owner = self.request.user
+        return super(RepoCreate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(RepoCreate, self).get_context_data(**kwargs)
+        context['page_title'] = 'Link Repo'
+        context['page_header'] = 'Link Repo'
+        context['form_submit_text'] = 'Link'
+        return context

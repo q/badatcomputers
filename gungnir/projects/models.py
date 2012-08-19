@@ -11,6 +11,9 @@ class Application(BaseModel):
     owner = models.ForeignKey('auth.User', related_name='applications')
     app_type = models.PositiveSmallIntegerField(choices=PROJECT_TYPE_CHOICES, default=0)
 
+    def __unicode__(self):
+        return u'{0}'.format(self.name)
+
     def get_absolute_url(self):
         return reverse('gungnir-projects-application-detail', kwargs={'pk':self.pk})
 
