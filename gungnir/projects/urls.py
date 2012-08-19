@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.decorators import login_required
 
-from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate
+from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate, RepoDetailView
 #from gungnir.core.views import ProfileView, DashboardView
 
 
@@ -17,7 +17,7 @@ urlpatterns = patterns('gungnir.projects.views',
         login_required(RepoCreate.as_view()),
         name='gungnir-projects-repo-create'),
     url(r'^repo/(?P<pk>\d+)/$',
-        login_required(RepoCreate.as_view()),
+        login_required(RepoDetailView.as_view()),
         name='gungnir-projects-repo-detail'),
 
 

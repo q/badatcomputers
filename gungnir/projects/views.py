@@ -7,11 +7,6 @@ from django.shortcuts import get_object_or_404
 from gungnir.projects.models import Application, Repo
 from gungnir.projects.forms import ApplicationForm, RepoForm
 
-class RepoView(TemplateView):
-    template_name = "projects/repo.html"
-    
-    def get(self, request):
-        return self.render_to_response({'form':RepoForm})
 
 class ApplicationDetailView(DetailView):
     model = Application
@@ -36,6 +31,9 @@ class ApplicationCreate(CreateView):
             context['page_header'] = 'Create Application'
             context['form_submit_text'] = 'Create'
             return context
+
+class RepoDetailView(DetailView):
+    model = Repo
 
 class RepoCreate(CreateView):
     model = Repo

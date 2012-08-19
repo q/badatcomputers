@@ -25,8 +25,7 @@ urlpatterns = patterns('',
     (r'^Build/$',BuildView.as_view()),
     (r'^SupervisordCommand/$',SupervisordCommandView.as_view()),
     (r'^PythonRequirements/$',PythonRequirementsView.as_view()),
-    (r'^Repo/$',RepoView.as_view()),
-    
+
     # django-celery
     url(r'^celery/', include('djcelery.urls')),
     
