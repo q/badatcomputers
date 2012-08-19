@@ -7,15 +7,15 @@
 {% endblock %}
 
 {% block content %}
-
     <header class="jumbotron subhead" id="overview">
-        <h2>Applications</h2>
+        <h2>Application Dashboard</h2>
         <p><br></p>
     </header>
 
 
+    {% for app in object_list %}
     <div class="page-header">
-        <h2>APP NAME (APP TYPE)</h2>
+        <h2>{{ app.name }} ({{ app.get_app_type_display }})</h2>
     </div>
 
 
@@ -36,17 +36,13 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% for  repo in app.repos.all %}
                 <tr>
-                    <td>1</td>
-                    <td>git://fucku:dix/suck.git</td>
-                    <td>master</td>
+                    <td>{{ repo.id }}</td>
+                    <td>{{ repo.url }}</td>
+                    <td>{{ repo.branch }}</td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td>git://balls:deep/your.mom</td>
-                    <td>slave</td>
-                </tr>
-
+                {% endfor %}
                 </tbody>
             </table>
 
@@ -57,7 +53,6 @@
 
     <div class="row">
     <div class="span9">
-
         <div class="well">
             <h4>BuildConfigs</h4>
             button to add buildconfig here, shoudl we list # of build configs?
@@ -72,19 +67,14 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% for buildconfig in app.buildconfigs.all %}
                 <tr>
-                    <td>repo 2</td>
-                    <td>ubuntu</td>
-                    <td>gunicorn</td>
-                    <td>AMI</td>
+                    <td>{{ buildconfig.repo }}</td>
+                    <td>{{ buildconfig.get_os_display }}</td>
+                    <td>{{ buildconfig.get_webserver_display }}</td>
+                    <td>{{ buildconfig.get_build_type_display }}</td>
                 </tr>
-                <tr>
-                    <td>repo 2</td>
-                    <td>centos</td>
-                    <td>apache</td>
-                    <td>deploy</td>
-                </tr>
-
+                {% endfor %}
                 </tbody>
             </table>
 
@@ -111,18 +101,20 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% for build in app.builds.all %}
                 <tr>
-                    <td>link</td>
-                    <td>ami-dixsucks</td>
-                    <td>DATETIMEDIX</td>
+                    <td>{{ build.config }}</td>
+                    <td>{{ build.ami_id }} {{ build.instance_id }}</td>
+                    <td>{{ build.created|date:"D d M Y" }}</td>
                 </tr>
+                {% endfor %}
                 </tbody>
             </table>
             button to create build here
         </div>
     </div>
     </div>
-
+    {% endfor %}
 
 {% endblock %}
 
