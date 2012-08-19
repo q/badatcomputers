@@ -74,19 +74,14 @@ class Repo(BaseModel):
         return branches
 
     def save(self, *args, **kwargs):
-        print 'SAVING...'
         try:
             async_task = kwargs.pop('async_task')
         except KeyError:
             async_task = True
+
         results = super(Repo, self).save(*args, **kwargs)
 
-        print 'ASYNC TASK IS {0}'.format(async_task)
-
-
         if async_task:
-            print 'APP {0}'.format(self.application.pk)
-            print 'URL {0}'.format(self.url)
             send_task('gungnir.projects.tasks.fetch_repo_for_existing_entry', args=(self.application.pk, self.url))
 
         return results
