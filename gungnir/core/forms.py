@@ -5,7 +5,7 @@ from gungnir.core.models import Profile
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        exclude = ('can_build',)
+        exclude = ('user','can_build',)
 
 # workaround to get username-as-emails to work with django-registration
 class CompatEmailUserCreationForm(EmailUserCreationForm):
