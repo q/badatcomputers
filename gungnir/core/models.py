@@ -16,9 +16,9 @@ class Profile(models.Model):
         db_table = 'profile'
     user = models.OneToOneField(User)
     can_build = models.BooleanField(default=False, blank=True)
-    aws_akey = models.CharField(max_length=64, blank=True)
-    aws_skey = models.CharField(max_length=64, blank=True)
-    ssh_key = models.FileField(upload_to='keys',)
+    aws_akey = models.CharField(max_length=64, blank=True,)
+    aws_skey = models.CharField(max_length=64, blank=True,)
+    ssh_key = models.FileField(upload_to='keys', blank=True,)
     
     def create_user_profile(sender, instance, created, **kwargs):
         if created:

@@ -27,13 +27,12 @@ class ProfileView(TemplateView):
     @method_decorator(login_required)
     def post(self, request):
         form = ProfileForm(request.POST, request.FILES)
+        profile = request.user.get_profile()
+        
         if form.is_valid():
-            profile = request.user.get_profile()
-            
             profile.aws_akey=form.cleaned_data['aws_akey']
             profile.aws_skey=form.cleaned_data['aws_skey']
             profile.save()
-            print profile.aws_akey
         
         form = ProfileForm({
             'aws_akey':profile.aws_akey,
