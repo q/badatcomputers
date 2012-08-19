@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
@@ -90,6 +90,14 @@ class RepoUpdate(UpdateView):
         context['page_header'] = 'Update Repo'
         context['form_submit_text'] = 'Update'
         return context
+        
+class RepoDelete(DeleteView):
+    model = Repo
+    success_url=reverse_lazy('gungnir-core-dashboard')
+    
+    def get_object(self, queryset=None):
+        obj = Repo.objects.get(id=self.kwargs['pk'])
+        return obj
 
 class BuildDetailView(DetailView):
     model = Build

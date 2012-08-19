@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.decorators import login_required
 
-from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate, RepoUpdate, RepoDetailView, pre_fetch_repo_view, BuildDetailView, BuildCreate, BuildUpdate, BuildConfigDetailView, BuildConfigCreate, BuildConfigUpdate
+from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate, RepoUpdate, RepoDetailView, RepoDelete, pre_fetch_repo_view, BuildDetailView, BuildCreate, BuildUpdate, BuildConfigDetailView, BuildConfigCreate, BuildConfigUpdate
 #from gungnir.core.views import ProfileView, DashboardView
 
 
@@ -20,6 +20,9 @@ urlpatterns = patterns('gungnir.projects.views',
     url(r'^repo/update/(?P<id>\d+)/$',
         login_required(RepoUpdate.as_view()),
         name='gungnir-projects-repo-update'),
+    url(r'^repo/delete/(?P<pk>\d+)/$',
+        login_required(RepoDelete.as_view()),
+        name='gungnir-projects-repo-delete'),
     url(r'^repo/(?P<pk>\d+)/$',
         login_required(RepoDetailView.as_view()),
         name='gungnir-projects-repo-detail'),
