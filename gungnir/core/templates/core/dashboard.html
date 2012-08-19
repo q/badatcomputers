@@ -18,91 +18,111 @@
         <h2>APP NAME (APP TYPE)</h2>
     </div>
 
-    <h4>Repos</h4>
-    button to add repo here, shoudl we list # of attached repos?
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>id? something to link to</th>
-            <th>repo url</th>
-            <th>watched branch</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>1</td>
-            <td>git://fucku:dix/suck.git</td>
-            <td>master</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>git://balls:deep/your.mom</td>
-            <td>slave</td>
-        </tr>
+    <div class="row">
+    <div class="span9">
 
-        </tbody>
-    </table>
+        <div class="well">
+            <h4>Repos</h4>
+            button to add repo here, shoudl we list # of attached repos?
 
-    button to add repo here
 
-    <br>
-    <br>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>id? something to link to</th>
+                    <th>repo url</th>
+                    <th>watched branch</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>git://fucku:dix/suck.git</td>
+                    <td>master</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>git://balls:deep/your.mom</td>
+                    <td>slave</td>
+                </tr>
 
-    <h4>BuildConfigs</h4>
-    button to add buildconfig here, shoudl we list # of build configs?
+                </tbody>
+            </table>
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>repo entry</th>
-            <th>os</th>
-            <th>webserver</th>
-            <th>build type</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>repo 2</td>
-            <td>ubuntu</td>
-            <td>gunicorn</td>
-            <td>AMI</td>
-        </tr>
-        <tr>
-            <td>repo 2</td>
-            <td>centos</td>
-            <td>apache</td>
-            <td>deploy</td>
-        </tr>
+            button to add repo here
+        </div>
+    </div>
+    </div>
 
-        </tbody>
-    </table>
+    <div class="row">
+    <div class="span9">
 
-    button to add buildconfig here
+        <div class="well">
+            <h4>BuildConfigs</h4>
+            button to add buildconfig here, shoudl we list # of build configs?
 
-    <br>
-    <br>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>repo entry</th>
+                    <th>os</th>
+                    <th>webserver</th>
+                    <th>build type</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>repo 2</td>
+                    <td>ubuntu</td>
+                    <td>gunicorn</td>
+                    <td>AMI</td>
+                </tr>
+                <tr>
+                    <td>repo 2</td>
+                    <td>centos</td>
+                    <td>apache</td>
+                    <td>deploy</td>
+                </tr>
 
-    <h4>Builds</h4>
-    button to add create build here, shoudl we list # of builds?
+                </tbody>
+            </table>
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>build config</th>
-            <th>instance / ami_id</th>
-            <th>create time</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>link</td>
-            <td>ami-dixsucks</td>
-            <td>DATETIMEDIX</td>
-        </tr>
-        </tbody>
-    </table>
-    button to create build here
+            button to add buildconfig here
+        </div>
+
+    </div>
+    </div>
+
+
+    <div class="row">
+    <div class="span9">
+
+        <div class="well">
+            <h4>Builds</h4>
+            button to add create build here, shoudl we list # of builds?
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>build config</th>
+                    <th>instance / ami_id</th>
+                    <th>create time</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>link</td>
+                    <td>ami-dixsucks</td>
+                    <td>DATETIMEDIX</td>
+                </tr>
+                </tbody>
+            </table>
+            button to create build here
+        </div>
+    </div>
+    </div>
+
 
 {% endblock %}
 

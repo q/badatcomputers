@@ -40,6 +40,7 @@
                         <li><a href="{% url auth_login %}">Login</a></li>
                         <li><a href="{% url registration_register %}">Register</a></li>
                     {% else %}
+                        <li><p class="navbar-text">{{ user.username }}</p></li>
                         <li><a href="{% url profile %}">Profile</a></li>
                         <li><a href="{% url auth_logout %}">Logout</a></li>
                     {% endif %}
