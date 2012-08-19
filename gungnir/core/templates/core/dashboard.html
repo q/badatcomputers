@@ -33,6 +33,7 @@
                     <th>id? something to link to</th>
                     <th>repo url</th>
                     <th>watched branch</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -41,6 +42,7 @@
                     <td>{{ repo.id }}</td>
                     <td>{{ repo.url }}</td>
                     <td>{{ repo.branch }}</td>
+                    <td><a href="/projects/repo/update/{{ repo.id }}/"><button class="btn">Edit</button></a></td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -64,6 +66,7 @@
                     <th>os</th>
                     <th>webserver</th>
                     <th>build type</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -73,6 +76,7 @@
                     <td>{{ buildconfig.get_os_display }}</td>
                     <td>{{ buildconfig.get_webserver_display }}</td>
                     <td>{{ buildconfig.get_build_type_display }}</td>
+                    <td><a href="/projects/buildconfig/update/{{ buildconfig.id }}/"><button class="btn">Edit</button></a></td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -98,6 +102,7 @@
                     <th>build config</th>
                     <th>instance / ami_id</th>
                     <th>create time</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -106,6 +111,7 @@
                     <td>{{ build.config }}</td>
                     <td>{{ build.ami_id }} {{ build.instance_id }}</td>
                     <td>{{ build.created|date:"D d M Y" }}</td>
+                    <td><a href="/projects/build/update/{{ build.id }}/"><button class="btn">Edit</button></a></td>
                 </tr>
                 {% endfor %}
                 </tbody>

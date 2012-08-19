@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, DetailView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import get_object_or_404
@@ -66,6 +66,31 @@ class RepoCreate(CreateView):
         context['form_submit_text'] = 'Link'
         return context
         
+class RepoUpdate(UpdateView):
+    model = Repo
+    form_class = RepoForm
+    success_url=reverse_lazy('gungnir-core-dashboard')
+    
+    def get_object(self, queryset=None):
+        obj = Repo.objects.get(id=self.kwargs['id'])
+        return obj
+    
+    def get_form(self, form_class):
+        form = super(RepoUpdate,self).get_form(form_class)
+        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+        return form
+
+    def form_valid(self, form):
+        form.instance.application.owner = self.request.user
+        return super(RepoUpdate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(RepoUpdate, self).get_context_data(**kwargs)
+        context['page_title'] = 'Update Repo'
+        context['page_header'] = 'Update Repo'
+        context['form_submit_text'] = 'Update'
+        return context
+        
 class BuildCreate(CreateView):
     model = Build
     form_class = BuildForm
@@ -85,6 +110,31 @@ class BuildCreate(CreateView):
         context['page_title'] = 'Link Build'
         context['page_header'] = 'Link Build'
         context['form_submit_text'] = 'Link'
+        return context
+        
+class BuildUpdate(UpdateView):
+    model = Build
+    form_class = BuildForm
+    success_url=reverse_lazy('gungnir-core-dashboard')
+    
+    def get_object(self, queryset=None):
+        obj = Build.objects.get(id=self.kwargs['id'])
+        return obj
+
+    def get_form(self, form_class):
+        form = super(BuildUpdate,self).get_form(form_class)
+        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+        return form
+
+    def form_valid(self, form):
+        form.instance.application.owner = self.request.user
+        return super(BuildUpdate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(BuildUpdate, self).get_context_data(**kwargs)
+        context['page_title'] = 'Update Build'
+        context['page_header'] = 'Update Build'
+        context['form_submit_text'] = 'Update'
         return context
         
 class BuildConfigCreate(CreateView):
@@ -107,3 +157,28 @@ class BuildConfigCreate(CreateView):
         context['page_header'] = 'Link BuildConfig'
         context['form_submit_text'] = 'Link'
         return context
+
+class BuildConfigUpdate(UpdateView):
+    model = BuildConfig
+    form_class = BuildConfigForm
+    success_url=reverse_lazy('gungnir-core-dashboard')
+    
+    def get_object(self, queryset=None):
+        obj = BuildConfig.objects.get(id=self.kwargs['id'])
+        return obj
+
+    def get_form(self, form_class):
+        form = super(BuildConfigUpdate,self).get_form(form_class)
+        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+        return form
+
+    def form_valid(self, form):
+        form.instance.application.owner = self.request.user
+        return super(BuildConfigUpdate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(BuildConfigCreate, self).get_context_data(**kwargs)
+        context['page_title'] = 'Update BuildConfig'
+        context['page_header'] = 'Update BuildConfig'
+        context['form_submit_text'] = 'Update'
+        return context  
