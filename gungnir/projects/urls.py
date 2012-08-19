@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.decorators import login_required
 
-from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate, RepoUpdate, RepoDetailView, RepoDelete, pre_fetch_repo_view, BuildDetailView, BuildCreate, BuildUpdate, BuildConfigDetailView, BuildConfigCreate, BuildConfigUpdate
+from gungnir.projects.views import ApplicationDetailView, ApplicationCreate, RepoCreate, RepoUpdate, RepoDetailView, RepoDelete, pre_fetch_repo_view, BuildDetailView, BuildCreate, BuildUpdate, BuildDelete, BuildConfigDetailView, BuildConfigCreate, BuildConfigUpdate, BuildConfigDelete
 #from gungnir.core.views import ProfileView, DashboardView
 
 
@@ -33,6 +33,9 @@ urlpatterns = patterns('gungnir.projects.views',
     url(r'^buildconfig/update/(?P<pk>\d+)/$',
         login_required(BuildConfigUpdate.as_view()),
         name='gungnir-projects-buildconfig-update'),
+    url(r'^buildconfig/delete/(?P<pk>\d+)/$',
+        login_required(BuildConfigDelete.as_view()),
+        name='gungnir-projects-BuildConfig-delete'),
     url(r'^buildconfig/(?P<pk>\d+)/$',
         login_required(BuildConfigDetailView.as_view()),
         name='gungnir-projects-buildconfig-detail'),
@@ -43,6 +46,9 @@ urlpatterns = patterns('gungnir.projects.views',
     url(r'^build/update/(?P<pk>\d+)/$',
         login_required(BuildUpdate.as_view()),
         name='gungnir-projects-build-update'),
+    url(r'^build/delete/(?P<pk>\d+)/$',
+        login_required(BuildDelete.as_view()),
+        name='gungnir-projects-Build-delete'),
     url(r'^build/(?P<pk>\d+)/$',
         login_required(BuildDetailView.as_view()),
         name='gungnir-projects-build-detail'),

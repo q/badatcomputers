@@ -166,6 +166,14 @@ class BuildUpdate(UpdateView):
         context['form_submit_text'] = 'Update'
         return context
 
+class BuildDelete(DeleteView):
+    model = Repo
+    success_url=reverse_lazy('gungnir-core-dashboard')
+    
+    def get_object(self, queryset=None):
+        obj = Build.objects.get(id=self.kwargs['pk'])
+        return obj
+
 class BuildConfigDetailView(DetailView):
     model = BuildConfig
  
@@ -220,3 +228,11 @@ class BuildConfigUpdate(UpdateView):
         context['page_header'] = 'Update BuildConfig'
         context['form_submit_text'] = 'Update'
         return context  
+
+class BuildConfigDelete(DeleteView):
+    model = Repo
+    success_url=reverse_lazy('gungnir-core-dashboard')
+    
+    def get_object(self, queryset=None):
+        obj = BuildConfig.objects.get(id=self.kwargs['pk'])
+        return obj
