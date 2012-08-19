@@ -1,41 +1,9 @@
-{% extends "core/base.html" %}
-
-{% load i18n %}
-
-{% block title %}Create Account{% endblock %}
+{% extends "core/form.html" %}
 
 {% block extrajs %}
     <script type="text/javascript">
         $().ready(function() {
-            $("input#id_first_name").focus();
+            $("input#id_email").focus();
         });
     </script>
 {% endblock %}
-{% block content %}
-    <div class="page-header">
-        <h1>Create Account</h1>
-    </div>
-    <div>
-        <form method="POST" class="" action="{% url registration_register %}">
-            <fieldset>
-                <!-- <legend>User Details</legend> -->
-                {% csrf_token %}
-                {% for field in form %}
-                <div class="{% if field.errors %}error{% endif %}">
-                    {{ field.label_tag }}
-                    <div class="input">
-                        {{ field }} {{ field.errors }}
-                    </div>
-                </div>
-                {% endfor %}
-
-                <div class="actions">
-                    <input type="submit" class="btn primary" value="Create Account">
-                    <button type="reset" class="btn">Cancel</button>
-                </div>
-            </fieldset>
-
-        </form>
-    </div>
-
-{% endblock content %}

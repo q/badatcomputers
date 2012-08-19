@@ -1,4 +1,4 @@
-from emailusernames.forms import EmailUserCreationForm
+from emailusernames.forms import EmailUserCreationForm, EmailAuthenticationForm
 from django.forms import ModelForm
 from django import forms
 from gungnir.core.models import Profile
@@ -19,3 +19,8 @@ class CompatEmailUserCreationForm(EmailUserCreationForm):
             cleaned_data['username'] = cleaned_data['email']
         return cleaned_data
 
+
+from gungnir.core.decorators import order_fields
+@order_fields('email','password')
+class CoreEmailAuthForm(EmailAuthenticationForm):
+    pass
