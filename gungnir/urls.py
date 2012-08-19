@@ -18,6 +18,8 @@ urlpatterns = patterns('',
 
     # celery task views
     url(r'^tasks/builds/build_image/(?P<build_config_id>\d+)$', build_image_view),
+    url(r'^tasks/projects/pre_fetch_repo$', build_image_view),
+
 
     # generic views
     (r'^AwsBaseAmi/$',AwsBaseAmiView.as_view()),

@@ -8,6 +8,11 @@ from gungnir.projects.models import Application, Repo
 from gungnir.projects.forms import ApplicationForm, RepoForm
 
 
+from djcelery.views import task_view
+
+# Wrapper to our celery task
+pre_fetch_repo_view = login_required(task_view(pre_fetch_repo))
+
 class ApplicationDetailView(DetailView):
     model = Application
 #    template_name = 'projects/app_list.html'
