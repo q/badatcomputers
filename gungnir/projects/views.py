@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.decorators import login_required
@@ -50,19 +51,29 @@ class RepoCreate(CreateView):
     form_class = RepoForm
     success_url=reverse_lazy('gungnir-core-dashboard')
 
-    def get_form(self, form_class):
-        form = super(RepoCreate,self).get_form(form_class)
-        form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
-        return form
+    def dispatch(self, *args, **kwargs):
+        self.app = get_object_or_404(Application, pk=kwargs.get('pk'))
+        return super(RepoCreate, self).dispatch(*args, **kwargs)
+
+#    def get_form(self, form_class):
+#        form = super(RepoCreate,self).get_form(form_class)
+#        #form.fields['application'].queryset = Application.objects.filter(owner=self.request.user)
+#        return form
 
     def form_valid(self, form):
-        form.instance.application.owner = self.request.user
-        return super(RepoCreate, self).form_valid(form)
+        self.object = form.save(commit=False)
+        self.object.application = self.app
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+#    def form_valid(self, form):
+#        #form.instance.application.owner = self.request.user
+#        return super(RepoCreate, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(RepoCreate, self).get_context_data(**kwargs)
         context['page_title'] = 'Link Repo'
-        context['page_header'] = 'Link Repo'
+        context['page_header'] = 'Link Repo to {0}'.format(self.app.name)
         context['form_submit_text'] = 'Link'
         return context
         
