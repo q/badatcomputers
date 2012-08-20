@@ -51,3 +51,7 @@ class DashboardView(TemplateView):
 class DashboardListView(ListView):
     model = Application
     template_name =  "core/dashboard.html"
+
+    def get_queryset(self):
+        qs = Application.objects.filter(owner=self.request.user)
+        return qs
